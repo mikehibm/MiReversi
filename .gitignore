@@ -1,0 +1,17 @@
+bin/
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+*~
+*.apk
+*.jar
+.metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+local.properties
+
+!lib/*.jar
