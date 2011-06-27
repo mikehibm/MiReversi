@@ -8,10 +8,15 @@ public class Board {
 	private int width;
 	private int height;
 	
-	private Panel panels[][];
+	private Panel panels[][] = new Panel[ROWS][COLS];
 	
 	public Board(){
-		
+	
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				panels[i][j] = new Panel();
+			}
+		}
 		
 	}
 	
