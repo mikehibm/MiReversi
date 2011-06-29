@@ -28,7 +28,7 @@ public class ReversiView extends View {
 		
 		mBoard.setSize(getWidth(), getHeight());
 		
-		showPanel(canvas);
+		drawBoard(canvas);
 	}
 
 	
@@ -56,7 +56,7 @@ public class ReversiView extends View {
 					//Toast.makeText(this.getContext(), e.getMessage(), 300).show();
 				}
 
-				invalidate();
+				invalidate();			//画面を再描画
 			}
 			break;
 		default:
@@ -67,7 +67,7 @@ public class ReversiView extends View {
 	}
 	
 	
-	private void showPanel(Canvas canvas){
+	private void drawBoard(Canvas canvas){
 		int bw = mBoard.getWidth();
 		int bh = mBoard.getHeight();
 		float cw = mBoard.getCellWidth();
@@ -75,13 +75,12 @@ public class ReversiView extends View {
 
 		if (mBoard.getWidth() <=0 ) return;
 
-		Paint paint = new Paint();
+		Paint paint = new Paint();					//本当はここでnewするのはパフォーマンス上良くない。後で直そう。
 		paint.setColor(Color.rgb(0, 180, 0));
 
 		canvas.drawRect( 0, 0, bw, bh, paint);
 
-		//罫線の色
-		paint.setColor(Color.rgb(40, 40, 40));
+		paint.setColor(Color.rgb(40, 40, 40));		//罫線の色
 		
 		//縦線
 		for (int i = 0; i < Board.COLS; i++) {
@@ -92,6 +91,7 @@ public class ReversiView extends View {
 			canvas.drawLine(0, ch * (i+1), bw, ch * (i+1), paint);
 		}
 
+		//円を描く前にアンチエイリアスを指定。これをしないと円がギザギザになる。
 		paint.setAntiAlias(true);
 
 		Cell[][] cells = mBoard.getCells();
