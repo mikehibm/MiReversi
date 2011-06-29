@@ -28,12 +28,7 @@ public class MainActivity extends Activity {
 
 	}
 
-	class CustomSurfaceView extends SurfaceView 
-	implements SurfaceHolder.Callback {
-
-		private int mScrWidth;
-		private int mScrHeight;
-
+	class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
 		public CustomSurfaceView(Context context) {
 			super(context);
@@ -44,12 +39,8 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void surfaceChanged (SurfaceHolder holder, int format, int width, int height) {
-			// SurfaceViewが変化（画面の大きさ，ピクセルフォーマット）した時のイベントの処理を記述
-			mScrWidth = width;
-			mScrHeight = height;
 
 			mBoard.setSize(width, height);
-
 			doDraw(holder);
 		}
 
@@ -71,7 +62,7 @@ public class MainActivity extends Activity {
 			holder.unlockCanvasAndPost(canvas);
 		}
 
-
+		@Override
 		protected void onDraw(Canvas canvas) {
 			canvas.drawColor(Color.WHITE);
 
