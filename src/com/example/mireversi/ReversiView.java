@@ -1,25 +1,48 @@
 package com.example.mireversi;
 
+import java.util.List;
+
 import com.example.mireversi.model.Board;
 import com.example.mireversi.model.Cell;
 import com.example.mireversi.model.Cell.E_STATUS;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 public class ReversiView extends View {
 
+	private static final String TAG = "ReversiView";
+	private static final String STATE_VIEW = "View";
+	private static final String STATE_CELLS = "Cells";
+	private static final int VIEW_ID = 1000;
+
 	private Board mBoard = new Board();
+	
+	private Paint mPaintBoardBg = new Paint();
+	private Paint mPaintBoardBorder = new Paint();
+	private Paint mPaintCellFgB = new Paint();
+	private Paint mPaintCellFgW = new Paint();
 
 	public ReversiView(Context context) {
 		super(context);
-		
+
+		setId(VIEW_ID);
 		setFocusable(true);
+		
+		mPaintBoardBg.setColor(getResources().getColor(R.color.board_bg));
+		mPaintBoardBorder.setColor(getResources().getColor(R.color.board_border));
+		mPaintCellFgB.setColor(getResources().getColor(R.color.cell_fg_black));
+		mPaintCellFgW.setColor(getResources().getColor(R.color.cell_fg_white));
+
+		//アンチエイリアスを指定。これをしないと円がギザギザになる。
+		mPaintCellFgB.setAntiAlias(true);
+		mPaintCellFgW.setAntiAlias(true);
 	}
 	
 	@Override
@@ -31,14 +54,6 @@ public class ReversiView extends View {
 		drawBoard(canvas);
 	}
 
-	
-	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		super.onSizeChanged(w, h, oldw, oldh);
-		
-		
-	}
-	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		float x = event.getX();
@@ -49,14 +64,21 @@ public class ReversiView extends View {
 			int r = (int)(y / mBoard.getCellHeidht());
 			int c = (int)(x / mBoard.getCellWidth());
 			if (r < Board.ROWS && c < Board.COLS){
+				List<Cell> changedCells = null;
+				
 				try {
-					mBoard.changeCell(r, c, mBoard.getTurn());
+					changedCells = mBoard.changeCell(r, c, mBoard.getTurn());
 					mBoard.changeTurn();
 				} catch (Exception e) {
 					//Toast.makeText(this.getContext(), e.getMessage(), 300).show();
+					Log.d(TAG, e.getMessage());
 				}
 
-				invalidate();			//画面を再描画
+				if (changedCells != null){
+					for (Cell cell : changedCells) {
+						invalidate(cell.getRect());			//変更された領域のみを再描画
+					}
+				}
 			}
 			break;
 		default:
@@ -68,32 +90,27 @@ public class ReversiView extends View {
 	
 	
 	private void drawBoard(Canvas canvas){
-		int bw = mBoard.getWidth();
-		int bh = mBoard.getHeight();
+
+		if (mBoard.getRectF().width() <= 0f ) return;
+		
+		float bw = mBoard.getRectF().width();
+		float bh = mBoard.getRectF().height();
 		float cw = mBoard.getCellWidth();
 		float ch = mBoard.getCellHeidht();
 
-		if (mBoard.getWidth() <=0 ) return;
+		//ボードの背景
+		canvas.drawRect(mBoard.getRectF(), mPaintBoardBg);
 
-		Paint paint = new Paint();					//本当はここでnewするのはパフォーマンス上良くない。後で直そう。
-		paint.setColor(Color.rgb(0, 180, 0));
-
-		canvas.drawRect( 0, 0, bw, bh, paint);
-
-		paint.setColor(Color.rgb(40, 40, 40));		//罫線の色
-		
 		//縦線
 		for (int i = 0; i < Board.COLS; i++) {
-			canvas.drawLine(cw * (i+1), 0, cw * (i+1), bh, paint);
+			canvas.drawLine(cw * (i+1), 0, cw * (i+1), bh, mPaintBoardBorder);
 		}
 		//横線
 		for (int i = 0; i < Board.ROWS; i++) {
-			canvas.drawLine(0, ch * (i+1), bw, ch * (i+1), paint);
+			canvas.drawLine(0, ch * (i+1), bw, ch * (i+1), mPaintBoardBorder);
 		}
 
-		//円を描く前にアンチエイリアスを指定。これをしないと円がギザギザになる。
-		paint.setAntiAlias(true);
-
+		//全てのCellについてコマが配置されていれば描く
 		Cell[][] cells = mBoard.getCells();
 		for (int i = 0; i < Board.ROWS; i++) {
 			for (int j = 0; j < Board.COLS; j++) {
@@ -101,17 +118,30 @@ public class ReversiView extends View {
 				Cell.E_STATUS st = cell.getStatus();
 
 				if (st == E_STATUS.Black){
-					paint.setColor(Color.BLACK);
+					canvas.drawCircle(cell.getCx(), cell.getCy(), (float) (cw * 0.46), mPaintCellFgB);
 				} else if(st == E_STATUS.White){
-					paint.setColor(Color.WHITE);
-				}
-
-				if (st != E_STATUS.None){
-					canvas.drawCircle(cell.getCx(), cell.getCy(), (float) (cw * 0.46), paint);
+					canvas.drawCircle(cell.getCx(), cell.getCy(), (float) (cw * 0.46), mPaintCellFgW);
 				}
 			}
 		}
 
 	}
 
+	@Override
+	protected Parcelable onSaveInstanceState() {
+		Parcelable p = super.onSaveInstanceState();
+		
+		Bundle b = new Bundle();
+		b.putSerializable(STATE_CELLS, mBoard.getCells());
+		b.putParcelable(STATE_VIEW, p);
+		return b;
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Parcelable state) {
+		Bundle b = (Bundle)state;
+		Cell[][] cells = (Cell[][])b.getSerializable(STATE_CELLS);
+		mBoard.setCells(cells);
+		super.onRestoreInstanceState(b.getParcelable(STATE_VIEW));
+	}
 }

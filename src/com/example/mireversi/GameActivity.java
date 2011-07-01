@@ -16,19 +16,12 @@ public class GameActivity extends Activity{
 
 	}
 
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.mainmenu, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-
-//	@Override
-//	public boolean onPrepareOptionsMenu(Menu menu) {
-//
-//		return super.onPrepareOptionsMenu(menu);
-//	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

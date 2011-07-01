@@ -1,5 +1,8 @@
 package com.example.mireversi.model;
 
+import android.graphics.Rect;
+import android.graphics.RectF;
+
 public class Cell {
 	
 	public enum E_STATUS{
@@ -8,44 +11,56 @@ public class Cell {
 		White
 	}
 	
-	private float width;
-	private float height;
-	private int top;
-	private int left;
+	private RectF rect = new RectF();
 	private E_STATUS status = E_STATUS.None;
 	
 	
-	public void setWidth(float width) {
-		this.width = width;
+	public void setRectF(RectF rect) {
+		this.rect = rect;
+	}
+	public RectF getRectF(){
+		return this.rect;
+	}
+	
+	public void setWidth(float w) {
+		this.rect.right = this.rect.left + w;
 	}
 	public float getWidth() {
-		return width;
+		return this.rect.width();
 	}
-	public void setHeight(float height) {
-		this.height = height;
+	public void setHeight(float h) {
+		this.rect.bottom = this.rect.top + h;
 	}
 	public float getHeight() {
-		return height;
+		return this.rect.height();
 	}
-	public void setTop(int top) {
-		this.top = top;
+	public void setTop(float top) {
+		this.rect.top = top;
 	}
-	public int getTop() {
-		return top;
+	public float getTop() {
+		return this.rect.top;
 	}
-	public void setLeft(int left) {
-		this.left = left;
+	public void setLeft(float left) {
+		this.rect.left = left;
 	}
-	public int getLeft() {
-		return left;
+	public float getLeft() {
+		return this.rect.left;
+	}
+	
+	public Rect getRect(){
+		Rect r = new Rect();
+		this.rect.round(r);
+		return r;
 	}
 	
 	public float getCx(){
-		return (float) ((float)this.left + (float)this.width/2.0);
+		return this.getRectF().centerX();
+		//return this.left + this.width/2.0f;
 	}
 	
 	public float getCy(){
-		return (float) ((float)this.top + (float)this.height/2.0);
+		return this.getRectF().centerY();
+		//return this.top + this.height/2.0f;
 	}
 	
 	public void setStatus(E_STATUS status) {
