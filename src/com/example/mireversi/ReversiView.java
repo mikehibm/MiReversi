@@ -14,6 +14,7 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 public class ReversiView extends View {
 
@@ -70,7 +71,7 @@ public class ReversiView extends View {
 					changedCells = mBoard.changeCell(r, c, mBoard.getTurn());
 					mBoard.changeTurn();
 				} catch (Exception e) {
-					//Toast.makeText(this.getContext(), e.getMessage(), 300).show();
+					Toast.makeText(this.getContext(), e.getMessage(), 300).show();
 					Log.d(TAG, e.getMessage());
 				}
 
@@ -132,7 +133,9 @@ public class ReversiView extends View {
 		Parcelable p = super.onSaveInstanceState();
 		
 		Bundle b = new Bundle();
-		b.putString(STATE_CELLS, mBoard.getStateString());		//Boardの状態を保存。
+		String boardState = mBoard.getStateString();
+		b.putString(STATE_CELLS, boardState);						//Boardの状態を保存。
+Log.d(TAG, "onSaveInstanceState: boardState=" + boardState);
 		b.putParcelable(STATE_VIEW, p);
 		return b;
 	}
@@ -140,9 +143,11 @@ public class ReversiView extends View {
 	@Override
 	protected void onRestoreInstanceState(Parcelable state) {
 		Bundle b = (Bundle)state;
-		mBoard.loadFromStateString(b.getString(STATE_CELLS));	//Boardの状態を復元。
+		String boardState = b.getString(STATE_CELLS);
+Log.d(TAG, "onRestoreInstanceState: boardState=" + boardState);
+		mBoard.loadFromStateString(boardState);					//Boardの状態を復元。
+		
 		super.onRestoreInstanceState(b.getParcelable(STATE_VIEW));
 	}
-	
 	
 }

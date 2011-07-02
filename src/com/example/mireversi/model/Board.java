@@ -1,12 +1,11 @@
 package com.example.mireversi.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-
-
 import android.graphics.RectF;
 import android.util.Log;
-
+import com.example.mireversi.exceptions.*;
 import com.example.mireversi.model.Cell.E_STATUS;
 
 /**
@@ -30,7 +29,7 @@ public class Board {
 	
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLS; j++) {
-				cells[i][j] = new Cell();
+				cells[i][j] = new Cell(this, j, i);
 			}
 		}
 
@@ -84,15 +83,26 @@ public class Board {
 		return this.rect.height() / (float)ROWS;
 	}
 	
-	public List<Cell> changeCell(int r, int c, Cell.E_STATUS newStatus) throws Exception{
+	public ArrayList<Cell> changeCell(int r, int c, Cell.E_STATUS newStatus) throws Exception{
 		Cell cell = cells[r][c];
-		if (cell.getStatus() != E_STATUS.None){
-			throw new Exception("Cell is not empty.");
-		}
 		
+		Cell.E_STATUS oppStatus = cell.getOpponentStatus(newStatus);
+		
+		ArrayList<Cell> list = cell.getReversibleCells(oppStatus);
+		if (list.size() == 0){
+			throw new InvalidMoveException();
+		}
+
+		ArrayList<Cell> changedCells = new ArrayList<Cell>();
+
+		for (Cell cell2 : list) {
+			cell2.setStatus(newStatus);
+			changedCells.add(cell2);
+		}
+
 		cell.setStatus(newStatus);
-		List<Cell> changedCells = new ArrayList<Cell>();
 		changedCells.add(cell);
+
 		return changedCells;
 	}
 	

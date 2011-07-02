@@ -1,5 +1,8 @@
 package com.example.mireversi.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -13,8 +16,17 @@ public class Cell {
 	
 	private static final String TAG = "Cell";
 
+	private Board mBoard;
 	private RectF rect = new RectF();
 	private E_STATUS status = E_STATUS.None;
+	private int x;
+	private int y;
+	
+	public Cell(Board board, int x, int y){
+		this.mBoard = board;
+		this.x = x;
+		this.y = y;
+	}
 	
 	
 	public static String statusToString(E_STATUS st){
@@ -98,5 +110,80 @@ public class Cell {
 	public String getStatusString() {
 		return statusToString(this.status);
 	}
+	
+	public E_STATUS getOpponentStatus(E_STATUS turn){
+		if (turn == E_STATUS.Black){
+			return E_STATUS.White;
+		} else if (turn == E_STATUS.White){
+			return E_STATUS.Black;
+		} else {
+			return E_STATUS.None;
+		}
+	}
 
+	public ArrayList<Cell> getReversibleCells(E_STATUS turn){
+		ArrayList<Cell> list = null;
+		ArrayList<Cell> listTotal = new ArrayList<Cell>();
+		
+		if (this.getStatus() != E_STATUS.None){
+			return listTotal;
+		}
+
+		int n = 0;
+		for (int i=-1; i<=1; i++){
+			for (int j=-1; j<=1; j++){
+				if (i != 0 || j != 0){
+					list = new ArrayList<Cell>();
+					getCellsInLine(j, i, turn, list);
+					n = list.size();
+					if (n > 0){
+						Cell cell = getCell(j * (n+1), i * (n+1));
+						if (cell != null){
+							if (cell.getStatus() == getOpponentStatus(turn)){
+								listTotal.addAll(list);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return listTotal;
+	}
+	
+	private void getCellsInLine(int dx, int dy, E_STATUS turn, ArrayList<Cell> list){
+		Cell cell = getCell(dx, dy);
+		if (cell == null) return;
+		
+		if (cell.getStatus() == turn){
+			list.add(cell);
+			cell.getCellsInLine(dx, dy, turn, list);
+		}
+	}
+	
+//	private int countLine(int dx, int dy, E_STATUS turn){
+//		Cell cell = getCell(dx, dy);
+//		if (cell == null) return 0;
+//		
+//		if (cell.getStatus() == turn){
+//			return cell.countLine(dx, dy, turn) + 1;
+//		}
+//
+//		return 0;
+//	}
+	
+	private Cell getCell(int offx, int offy){
+		int px = this.x + offx;
+		int py = this.y + offy;
+		
+		if (px < 0 || px >= Board.COLS){
+			return null;
+		}
+		if (py < 0 || py >= Board.ROWS){
+			return null;
+		}
+		
+		Cell[][] cells = mBoard.getCells();
+		return cells[py][px];
+	}
 }
