@@ -132,7 +132,7 @@ public class ReversiView extends View {
 		Parcelable p = super.onSaveInstanceState();
 		
 		Bundle b = new Bundle();
-		b.putSerializable(STATE_CELLS, mBoard.getCells());
+		b.putString(STATE_CELLS, mBoard.getStateString());		//Boardの状態を保存。
 		b.putParcelable(STATE_VIEW, p);
 		return b;
 	}
@@ -140,8 +140,9 @@ public class ReversiView extends View {
 	@Override
 	protected void onRestoreInstanceState(Parcelable state) {
 		Bundle b = (Bundle)state;
-		Cell[][] cells = (Cell[][])b.getSerializable(STATE_CELLS);
-		mBoard.setCells(cells);
+		mBoard.loadFromStateString(b.getString(STATE_CELLS));	//Boardの状態を復元。
 		super.onRestoreInstanceState(b.getParcelable(STATE_VIEW));
 	}
+	
+	
 }

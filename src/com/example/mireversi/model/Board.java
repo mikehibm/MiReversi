@@ -5,11 +5,17 @@ import java.util.List;
 
 
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.example.mireversi.model.Cell.E_STATUS;
 
+/**
+ * @author mike
+ *
+ */
 public class Board {
 	
+	private static final String TAG = "Board";
 	public static final int COLS = 8;
 	public static final int ROWS = 8;
 	
@@ -63,30 +69,6 @@ public class Board {
 		}
 	}
 	
-//	public float getWidth() {
-//		return this.rect.width();
-//	}
-//
-//	public float getHeight() {
-//		return this.rect.height();
-//	}
-//
-//	public void setTop(int top) {
-//		this.rect.top = top;
-//	}
-//
-//	public float getTop() {
-//		return this.rect.top;
-//	}
-//
-//	public void setLeft(int left) {
-//		this.rect.left = left;
-//	}
-//
-//	public float getLeft() {
-//		return this.rect.left;
-//	}
-
 	public Cell[][] getCells(){
 		return cells;
 	}
@@ -123,6 +105,46 @@ public class Board {
 			this.turn = E_STATUS.White;
 		} else {
 			this.turn = E_STATUS.Black;
+		}
+	}
+	
+	/**
+	 * 状態を文字列にシリアライズする。
+	 */
+	public String getStateString(){
+		StringBuilder str = new StringBuilder();
+	
+		str.append(Cell.statusToString(this.turn) + ":");
+		
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				str.append(cells[i][j].getStatusString());
+			}
+		}
+		
+		String s = str.toString();
+		Log.d(TAG, "getStateString:" + s);
+		return s;
+	}
+
+
+	
+	/**
+	 * 文字列から状態を復元する。
+	 * @param s
+	 */
+	public void loadFromStateString(String s){
+		
+		this.turn = Cell.stringToStatus(s.substring(0, 1));
+		
+		String s2;
+		int start = 2;
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				s2 = s.substring(start, start+1);
+				cells[i][j].setStatusString(s2);
+				start++;
+			}
 		}
 	}
 }

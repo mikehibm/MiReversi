@@ -11,9 +11,31 @@ public class Cell {
 		White
 	}
 	
+	private static final String TAG = "Cell";
+
 	private RectF rect = new RectF();
 	private E_STATUS status = E_STATUS.None;
 	
+	
+	public static String statusToString(E_STATUS st){
+		String s = "N";
+		if (st == E_STATUS.Black){
+			s = "B";
+		} else if (st == E_STATUS.White){
+			s = "W";
+		}
+		return s;
+	}
+	
+	public static E_STATUS stringToStatus(String s){
+		E_STATUS st  = E_STATUS.None;
+		if (s.equals("B")){
+			st = E_STATUS.Black;
+		} else if (s.equals("W")){
+			st = E_STATUS.White;
+		}
+		return st;
+	}
 	
 	public void setRectF(RectF rect) {
 		this.rect = rect;
@@ -68,6 +90,13 @@ public class Cell {
 	}
 	public E_STATUS getStatus() {
 		return status;
+	}
+
+	public void setStatusString(String status_str) {
+		this.status = stringToStatus(status_str);
+	}
+	public String getStatusString() {
+		return statusToString(this.status);
 	}
 
 }
