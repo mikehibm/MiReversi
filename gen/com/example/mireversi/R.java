@@ -13,6 +13,7 @@ public final class R {
     public static final class color {
         public static final int board_bg=0x7f040000;
         public static final int board_border=0x7f040001;
+        public static final int cell_bg_available=0x7f040004;
         public static final int cell_fg_black=0x7f040002;
         public static final int cell_fg_white=0x7f040003;
     }

@@ -29,6 +29,8 @@ public class ReversiView extends View {
 	private Paint mPaintBoardBorder = new Paint();
 	private Paint mPaintCellFgB = new Paint();
 	private Paint mPaintCellFgW = new Paint();
+	private Paint mPaintCellAvB = new Paint();
+	private Paint mPaintCellAvW = new Paint();
 
 	public ReversiView(Context context) {
 		super(context);
@@ -40,11 +42,18 @@ public class ReversiView extends View {
 		mPaintBoardBorder.setColor(getResources().getColor(R.color.board_border));
 		mPaintCellFgB.setColor(getResources().getColor(R.color.cell_fg_black));
 		mPaintCellFgW.setColor(getResources().getColor(R.color.cell_fg_white));
+		mPaintCellAvB.setColor(getResources().getColor(R.color.cell_fg_black));
+		mPaintCellAvW.setColor(getResources().getColor(R.color.cell_fg_white));
 
 		//アンチエイリアスを指定。これをしないと円がギザギザになる。
 		mPaintCellFgB.setAntiAlias(true);
 		mPaintCellFgW.setAntiAlias(true);
-	}
+		mPaintCellAvB.setAntiAlias(true);
+		mPaintCellAvW.setAntiAlias(true);
+
+		mPaintCellAvB.setAlpha(128);
+		mPaintCellAvW.setAlpha(128);
+}
 	
 	public void init(){
 		mBoard = new Board();
@@ -89,11 +98,12 @@ public class ReversiView extends View {
 					Log.d(TAG, e.getMessage());
 				}
 
-				if (changedCells != null){
-					for (Cell cell : changedCells) {
-						invalidate(cell.getRect());			//変更された領域のみを再描画
-					}
-				}
+//				if (changedCells != null){
+//					for (Cell cell : changedCells) {
+//						invalidate(cell.getRect());			//変更された領域のみを再描画
+//					}
+//				}
+				invalidate();
 			}
 			break;
 		default:
@@ -134,6 +144,8 @@ public class ReversiView extends View {
 		float bh = mBoard.getRectF().height();
 		float cw = mBoard.getCellWidth();
 		float ch = mBoard.getCellHeidht();
+		float w = cw * 0.46f;
+		float aw = cw * 0.1f;
 
 		//ボードの背景
 		canvas.drawRect(mBoard.getRectF(), mPaintBoardBg);
@@ -153,11 +165,21 @@ public class ReversiView extends View {
 			for (int j = 0; j < Board.COLS; j++) {
 				Cell cell =cells[i][j]; 
 				Cell.E_STATUS st = cell.getStatus();
-
+				
 				if (st == E_STATUS.Black){
-					canvas.drawCircle(cell.getCx(), cell.getCy(), (float) (cw * 0.46), mPaintCellFgB);
+					canvas.drawCircle(cell.getCx(), cell.getCy(), w, mPaintCellFgB);
 				} else if(st == E_STATUS.White){
-					canvas.drawCircle(cell.getCx(), cell.getCy(), (float) (cw * 0.46), mPaintCellFgW);
+					canvas.drawCircle(cell.getCx(), cell.getCy(), w, mPaintCellFgW);
+				} else {
+					if (cell.getReversibleCells().size() > 0){
+						if (mBoard.getTurn() == Cell.E_STATUS.Black){
+							canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintCellAvB);
+						} else {
+							canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintCellAvW);
+						}
+					} else {
+						canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintBoardBg);
+					}
 				}
 			}
 		}

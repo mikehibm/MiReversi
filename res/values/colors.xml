@@ -5,4 +5,5 @@
 
 	<color name="cell_fg_black">#000000</color>    
 	<color name="cell_fg_white">#FFFFFF</color>    
+	<color name="cell_bg_available">#FFCCCC</color>    
 </resources>
