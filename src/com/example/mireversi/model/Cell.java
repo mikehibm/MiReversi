@@ -1,8 +1,6 @@
 package com.example.mireversi.model;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -17,10 +15,11 @@ public class Cell {
 	private static final String TAG = "Cell";
 
 	private Board mBoard;
-	private RectF rect = new RectF();
 	private E_STATUS status = E_STATUS.None;
+	private RectF rect = new RectF();
 	private int x;
 	private int y;
+	ArrayList<Cell> mReversibleCells = new ArrayList<Cell>();
 	
 	public Cell(Board board, int x, int y){
 		this.mBoard = board;
@@ -28,6 +27,16 @@ public class Cell {
 		this.y = y;
 	}
 	
+	
+	public static String statusToDisplay(E_STATUS st){
+		String s = "None";
+		if (st == E_STATUS.Black){
+			s = "Black";
+		} else if (st == E_STATUS.White){
+			s = "White";
+		}
+		return s;
+	}
 	
 	public static String statusToString(E_STATUS st){
 		String s = "N";
@@ -103,6 +112,10 @@ public class Cell {
 	public E_STATUS getStatus() {
 		return status;
 	}
+	
+	public boolean isBlank(){
+		return (this.status == E_STATUS.None);
+	}
 
 	public void setStatusString(String status_str) {
 		this.status = stringToStatus(status_str);
@@ -121,58 +134,49 @@ public class Cell {
 		}
 	}
 
-	public ArrayList<Cell> getReversibleCells(E_STATUS turn){
-		ArrayList<Cell> list = null;
-		ArrayList<Cell> listTotal = new ArrayList<Cell>();
+	public ArrayList<Cell> getReversibleCells(){
+		return mReversibleCells;
+	}
+	
+	public void setReversibleCells(E_STATUS current){
+		mReversibleCells.clear();
 		
 		if (this.getStatus() != E_STATUS.None){
-			return listTotal;
+			return;
 		}
 
-		int n = 0;
+		E_STATUS opponent = getOpponentStatus(current);
+
 		for (int i=-1; i<=1; i++){
 			for (int j=-1; j<=1; j++){
 				if (i != 0 || j != 0){
-					list = new ArrayList<Cell>();
-					getCellsInLine(j, i, turn, list);
-					n = list.size();
+					ArrayList<Cell> list = new ArrayList<Cell>();
+					int n = getCellsInLine(j, i, opponent, list);
 					if (n > 0){
-						Cell cell = getCell(j * (n+1), i * (n+1));
+						Cell cell = getNextCell(j * (n+1), i * (n+1));
 						if (cell != null){
-							if (cell.getStatus() == getOpponentStatus(turn)){
-								listTotal.addAll(list);
+							if (cell.getStatus() == current){
+								mReversibleCells.addAll(list);
 							}
 						}
 					}
 				}
 			}
 		}
-		
-		return listTotal;
 	}
 	
-	private void getCellsInLine(int dx, int dy, E_STATUS turn, ArrayList<Cell> list){
-		Cell cell = getCell(dx, dy);
-		if (cell == null) return;
-		
-		if (cell.getStatus() == turn){
-			list.add(cell);
-			cell.getCellsInLine(dx, dy, turn, list);
+	private int getCellsInLine(int dx, int dy, E_STATUS turn, ArrayList<Cell> list){
+		Cell cell = getNextCell(dx, dy);
+		if (cell != null){
+			if (cell.getStatus() == turn){
+				list.add(cell);
+				cell.getCellsInLine(dx, dy, turn, list);
+			}
 		}
+		return list.size();
 	}
 	
-//	private int countLine(int dx, int dy, E_STATUS turn){
-//		Cell cell = getCell(dx, dy);
-//		if (cell == null) return 0;
-//		
-//		if (cell.getStatus() == turn){
-//			return cell.countLine(dx, dy, turn) + 1;
-//		}
-//
-//		return 0;
-//	}
-	
-	private Cell getCell(int offx, int offy){
+	private Cell getNextCell(int offx, int offy){
 		int px = this.x + offx;
 		int py = this.y + offy;
 		

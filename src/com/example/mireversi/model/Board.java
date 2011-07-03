@@ -9,7 +9,7 @@ import com.example.mireversi.exceptions.*;
 import com.example.mireversi.model.Cell.E_STATUS;
 
 /**
- * @author mike
+ * @author Mike
  *
  */
 public class Board {
@@ -34,12 +34,13 @@ public class Board {
 		}
 
 		//初期の配置をセット
-		cells[ROWS/2 -1][COLS/2 -1].setStatus(Cell.E_STATUS.Black);
-		cells[ROWS/2 -1][COLS/2].setStatus(Cell.E_STATUS.White);
-		cells[ROWS/2][COLS/2 -1].setStatus(Cell.E_STATUS.White);
-		cells[ROWS/2][COLS/2].setStatus(Cell.E_STATUS.Black);
+		cells[ROWS/2 -1][COLS/2 -1].setStatus(Cell.E_STATUS.White);
+		cells[ROWS/2 -1][COLS/2].setStatus(Cell.E_STATUS.Black);
+		cells[ROWS/2][COLS/2 -1].setStatus(Cell.E_STATUS.Black);
+		cells[ROWS/2][COLS/2].setStatus(Cell.E_STATUS.White);
 
 		turn = Cell.E_STATUS.Black;
+		setAllReversibleCells();
 	}
 	
 	public void setRectF(RectF rect) {
@@ -86,9 +87,7 @@ public class Board {
 	public ArrayList<Cell> changeCell(int r, int c, Cell.E_STATUS newStatus) throws Exception{
 		Cell cell = cells[r][c];
 		
-		Cell.E_STATUS oppStatus = cell.getOpponentStatus(newStatus);
-		
-		ArrayList<Cell> list = cell.getReversibleCells(oppStatus);
+		ArrayList<Cell> list = cell.getReversibleCells();
 		if (list.size() == 0){
 			throw new InvalidMoveException();
 		}
@@ -110,13 +109,61 @@ public class Board {
 		return this.turn;
 	}
 	
-	public void changeTurn(){
+	public int changeTurn(){
 		if (this.turn == E_STATUS.Black){
 			this.turn = E_STATUS.White;
 		} else {
 			this.turn = E_STATUS.Black;
 		}
+
+		return setAllReversibleCells();
 	}
+	
+	private int setAllReversibleCells(){
+		int n = 0;
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				cells[i][j].setReversibleCells(this.turn);
+				if (cells[i][j].getReversibleCells().size() > 0){
+					n++;
+				}
+			}
+		}
+		return n;
+	}
+	
+	public int countCells(Cell.E_STATUS status){
+		int n = 0;
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				if (cells[i][j].getStatus() == status){
+					n++;
+				}
+			}
+		}
+		return n;
+	}
+	
+	public boolean isFinished(){
+		return (countCells(E_STATUS.None) == 0);
+	}
+	
+	public Cell.E_STATUS getWinner(){
+		E_STATUS winner = E_STATUS.None;
+		int cntB = countCells(E_STATUS.Black);
+		int cntW = countCells(E_STATUS.White);
+		if (cntB > cntW){
+			winner = E_STATUS.Black;
+		} else if (cntB < cntW){
+			winner = E_STATUS.White;
+		}
+		return winner;
+	}
+	
+	public String getTurnDisplay(){
+		return Cell.statusToDisplay(this.turn);
+	}
+	
 	
 	/**
 	 * 状態を文字列にシリアライズする。
@@ -156,5 +203,8 @@ public class Board {
 				start++;
 			}
 		}
+
+		setAllReversibleCells();
 	}
+
 }

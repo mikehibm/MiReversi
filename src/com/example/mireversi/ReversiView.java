@@ -46,6 +46,11 @@ public class ReversiView extends View {
 		mPaintCellFgW.setAntiAlias(true);
 	}
 	
+	public void init(){
+		mBoard = new Board();
+		invalidate();
+	}
+	
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
@@ -69,9 +74,18 @@ public class ReversiView extends View {
 				
 				try {
 					changedCells = mBoard.changeCell(r, c, mBoard.getTurn());
-					mBoard.changeTurn();
+					
+					int nextAvailableCellCount = mBoard.changeTurn(); 
+					if (nextAvailableCellCount == 0){
+						if (mBoard.isFinished()){
+							showCountsToast();
+						} else {
+							showSkippMessage();
+							mBoard.changeTurn();
+						}
+					}
 				} catch (Exception e) {
-					Toast.makeText(this.getContext(), e.getMessage(), 300).show();
+					//Toast.makeText(this.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
 					Log.d(TAG, e.getMessage());
 				}
 
@@ -88,7 +102,29 @@ public class ReversiView extends View {
 		
 		return true;
 	}
+
+	public void showCountsToast(){
+		Cell.E_STATUS winner = mBoard.getWinner();
+		String msg = "Black: " + mBoard.countCells(Cell.E_STATUS.Black) + "\n"
+			+ "White: " + mBoard.countCells(Cell.E_STATUS.White) + "\n\n";
+		
+		if (mBoard.isFinished()){
+			msg += "Winner is: " + Cell.statusToDisplay(winner) + "!!";
+		} else {
+			if (winner != Cell.E_STATUS.None){
+				msg += Cell.statusToDisplay(winner) + " is winning...\n\n";
+			}
+			msg += mBoard.getTurnDisplay() + "'s turn.";
+		}
+		Toast.makeText(this.getContext(), msg, Toast.LENGTH_LONG).show();
+		Log.d(TAG, msg);
+	}
 	
+	private void showSkippMessage(){
+		String msg = Cell.statusToDisplay(mBoard.getTurn()) + " has been skipped.";
+		Toast.makeText(this.getContext(), msg, Toast.LENGTH_SHORT).show();
+		Log.d(TAG, msg);
+	}
 	
 	private void drawBoard(Canvas canvas){
 

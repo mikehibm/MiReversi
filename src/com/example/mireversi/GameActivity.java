@@ -8,11 +8,14 @@ import android.view.MenuItem;
 
 public class GameActivity extends Activity{
 
+	ReversiView reversiview = null;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(new ReversiView(this));
+		reversiview = new ReversiView(this);
+		setContentView(reversiview);
 
 	}
 
@@ -32,6 +35,12 @@ public class GameActivity extends Activity{
 //		case R.id.mnuPref:
 //			openPref();
 //			break;
+		case R.id.mnuStat:
+			reversiview.showCountsToast();
+			break;
+		case R.id.mnuInit:
+			reversiview.init();
+			break;
 		default:
 			break;
 		}

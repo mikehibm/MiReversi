@@ -5,6 +5,12 @@
     <item android:title="@string/mnu_pref" android:id="@+id/mnuPref" 
     	android:orderInCategory="30" android:icon="@android:drawable/ic_menu_preferences"></item>
 
+    <item android:title="@string/mnu_stat" android:id="@+id/mnuStat" 
+    	android:orderInCategory="40" android:icon="@android:drawable/ic_menu_myplaces"></item>
+
+    <item android:title="@string/mnu_init" android:id="@+id/mnuInit" 
+    	android:orderInCategory="50" android:icon="@android:drawable/ic_menu_revert"></item>
+
     <item android:title="@string/mnu_exit" android:id="@+id/mnuExit" 
     	android:orderInCategory="90" android:icon="@android:drawable/ic_menu_close_clear_cancel"></item> 
 </menu> 

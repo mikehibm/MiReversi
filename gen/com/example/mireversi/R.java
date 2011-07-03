@@ -20,8 +20,10 @@ public final class R {
         public static final int icon=0x7f020000;
     }
     public static final class id {
-        public static final int mnuExit=0x7f070002;
+        public static final int mnuExit=0x7f070004;
+        public static final int mnuInit=0x7f070003;
         public static final int mnuPref=0x7f070001;
+        public static final int mnuStat=0x7f070002;
         public static final int txtTop=0x7f070000;
     }
     public static final class layout {
@@ -33,6 +35,8 @@ public final class R {
     public static final class string {
         public static final int app_name=0x7f050000;
         public static final int mnu_exit=0x7f050001;
+        public static final int mnu_init=0x7f050004;
         public static final int mnu_pref=0x7f050002;
+        public static final int mnu_stat=0x7f050003;
     }
 }

@@ -4,4 +4,6 @@
 
     <string name="mnu_exit">閉じる</string>
     <string name="mnu_pref">設定</string>  
+    <string name="mnu_stat">カウント</string>  
+    <string name="mnu_init">最初から始める</string>  
 </resources>
