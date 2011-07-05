@@ -1,6 +1,7 @@
 package com.example.mireversi;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,9 +33,9 @@ public class GameActivity extends Activity{
 		case R.id.mnuExit:
 			finish();
 			break;
-//		case R.id.mnuPref:
-//			openPref();
-//			break;
+		case R.id.mnuPref:
+			openPref();
+			break;
 		case R.id.mnuStat:
 			reversiview.showCountsToast();
 			break;
@@ -45,6 +46,12 @@ public class GameActivity extends Activity{
 			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	//設定画面を開く
+	private void openPref() {
+		Intent intent = new Intent(this, Pref.class); 
+		startActivity(intent);
 	}
 
 }

@@ -12,7 +12,7 @@ public class Cell {
 		White
 	}
 	
-	private static final String TAG = "Cell";
+//	private static final String TAG = "Cell";
 
 	private Board mBoard;
 	private E_STATUS status = E_STATUS.None;

@@ -1,7 +1,6 @@
 package com.example.mireversi.model;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import android.graphics.RectF;
 import android.util.Log;
@@ -40,7 +39,8 @@ public class Board {
 		cells[ROWS/2][COLS/2].setStatus(Cell.E_STATUS.White);
 
 		turn = Cell.E_STATUS.Black;
-		setAllReversibleCells();
+		ArrayList<Cell> changedCells = new ArrayList<Cell>();
+		setAllReversibleCells(changedCells);
 	}
 	
 	public void setRectF(RectF rect) {
@@ -109,23 +109,34 @@ public class Board {
 		return this.turn;
 	}
 	
-	public int changeTurn(){
+	public int changeTurn(List<Cell> changedCells){
 		if (this.turn == E_STATUS.Black){
 			this.turn = E_STATUS.White;
 		} else {
 			this.turn = E_STATUS.Black;
 		}
 
-		return setAllReversibleCells();
+		return setAllReversibleCells(changedCells);
 	}
 	
-	private int setAllReversibleCells(){
+	private int setAllReversibleCells(List<Cell> changedCells){
 		int n = 0;
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLS; j++) {
-				cells[i][j].setReversibleCells(this.turn);
-				if (cells[i][j].getReversibleCells().size() > 0){
+				Cell cell = cells[i][j];
+				
+				//再計算の前に前回マークされていた部分を変更リストに追加。
+				if (cell.getReversibleCells().size() > 0){
+					changedCells.add(cell);
+				}
+				
+				//裏返されるセルのリストを再計算。
+				cell.setReversibleCells(this.turn);
+
+				//再計算後に今回マークされた部分を変更リストに追加。
+				if (cell.getReversibleCells().size() > 0){
 					n++;
+					changedCells.add(cell);
 				}
 			}
 		}
@@ -204,7 +215,8 @@ public class Board {
 			}
 		}
 
-		setAllReversibleCells();
+		ArrayList<Cell> changedCells = new ArrayList<Cell>();
+		setAllReversibleCells(changedCells);
 	}
 
 }

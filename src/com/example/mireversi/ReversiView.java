@@ -51,8 +51,8 @@ public class ReversiView extends View {
 		mPaintCellAvB.setAntiAlias(true);
 		mPaintCellAvW.setAntiAlias(true);
 
-		mPaintCellAvB.setAlpha(128);
-		mPaintCellAvW.setAlpha(128);
+		mPaintCellAvB.setAlpha(16);
+		mPaintCellAvW.setAlpha(32);
 }
 	
 	public void init(){
@@ -84,13 +84,13 @@ public class ReversiView extends View {
 				try {
 					changedCells = mBoard.changeCell(r, c, mBoard.getTurn());
 					
-					int nextAvailableCellCount = mBoard.changeTurn(); 
+					int nextAvailableCellCount = mBoard.changeTurn(changedCells); 
 					if (nextAvailableCellCount == 0){
 						if (mBoard.isFinished()){
 							showCountsToast();
 						} else {
 							showSkippMessage();
-							mBoard.changeTurn();
+							mBoard.changeTurn(changedCells);
 						}
 					}
 				} catch (Exception e) {
@@ -98,12 +98,11 @@ public class ReversiView extends View {
 					Log.d(TAG, e.getMessage());
 				}
 
-//				if (changedCells != null){
-//					for (Cell cell : changedCells) {
-//						invalidate(cell.getRect());			//変更された領域のみを再描画
-//					}
-//				}
-				invalidate();
+				if (changedCells != null){
+					for (Cell cell : changedCells) {
+						invalidate(cell.getRect());			//変更された領域のみを再描画
+					}
+				}
 			}
 			break;
 		default:
@@ -144,8 +143,7 @@ public class ReversiView extends View {
 		float bh = mBoard.getRectF().height();
 		float cw = mBoard.getCellWidth();
 		float ch = mBoard.getCellHeidht();
-		float w = cw * 0.46f;
-		float aw = cw * 0.1f;
+		float w = cw * 0.42f;
 
 		//ボードの背景
 		canvas.drawRect(mBoard.getRectF(), mPaintBoardBg);
@@ -171,19 +169,28 @@ public class ReversiView extends View {
 				} else if(st == E_STATUS.White){
 					canvas.drawCircle(cell.getCx(), cell.getCy(), w, mPaintCellFgW);
 				} else {
-					if (cell.getReversibleCells().size() > 0){
-						if (mBoard.getTurn() == Cell.E_STATUS.Black){
-							canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintCellAvB);
-						} else {
-							canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintCellAvW);
-						}
-					} else {
-						canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintBoardBg);
-					}
+					showHints(cell, canvas, cw);
 				}
 			}
 		}
+	}
+	
+	private void showHints(Cell cell, Canvas canvas, float cw){
+		if (!Pref.getShowHints(getContext())){
+			return;
+		}
 
+		float aw = cw * 0.1f;
+
+		if (cell.getReversibleCells().size() > 0){
+			if (mBoard.getTurn() == Cell.E_STATUS.Black){
+				canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintCellAvB);
+			} else {
+				canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintCellAvW);
+			}
+		} else {
+			canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintBoardBg);
+		}
 	}
 
 	@Override

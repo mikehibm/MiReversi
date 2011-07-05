@@ -6,4 +6,9 @@
     <string name="mnu_pref">設定</string>  
     <string name="mnu_stat">カウント</string>  
     <string name="mnu_init">最初から始める</string>  
+
+    <string name="pref_cat_general">設定</string>  
+    <string name="pref_show_hints">ヒントを表示</string>  
+    <string name="pref_show_hints_on">表示する</string>  
+    <string name="pref_show_hints_off">表示しない</string>  
 </resources>
