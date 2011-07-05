@@ -86,11 +86,14 @@ public class ReversiView extends View {
 					
 					int nextAvailableCellCount = mBoard.changeTurn(changedCells); 
 					if (nextAvailableCellCount == 0){
-						if (mBoard.isFinished()){
-							showCountsToast();
+						if (mBoard.isFinished()){				//全部のセルが埋まった場合、
+							showCountsToast();						//結果を表示。
 						} else {
 							showSkippMessage();
-							mBoard.changeTurn(changedCells);
+							nextAvailableCellCount = mBoard.changeTurn(changedCells);
+							if (nextAvailableCellCount == 0){	//どちらも打つ場所が無くなった場合、
+								showCountsToast();					//結果を表示
+							}
 						}
 					}
 				} catch (Exception e) {
