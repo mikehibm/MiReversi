@@ -23,10 +23,8 @@ public class Pref  extends PreferenceActivity{
     }
     
     public static boolean getShowHints(Context con){
-    	String s = con.getString(R.string.pref_show_hints_default);
-    	boolean def_value = Boolean.getBoolean(s);
-    	boolean value = PreferenceManager.getDefaultSharedPreferences(con).getBoolean(KEY_SHOW_HINTS, 
-    						def_value);
+    	boolean def_value = Boolean.valueOf(con.getString(R.string.pref_show_hints_default));
+    	boolean value = PreferenceManager.getDefaultSharedPreferences(con).getBoolean(KEY_SHOW_HINTS, def_value);
     	return value;
     }
     

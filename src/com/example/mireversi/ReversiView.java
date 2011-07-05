@@ -147,6 +147,7 @@ public class ReversiView extends View {
 		float cw = mBoard.getCellWidth();
 		float ch = mBoard.getCellHeidht();
 		float w = cw * 0.42f;
+		boolean show_hints = Pref.getShowHints(getContext());
 
 		//ボードの背景
 		canvas.drawRect(mBoard.getRectF(), mPaintBoardBg);
@@ -172,14 +173,14 @@ public class ReversiView extends View {
 				} else if(st == E_STATUS.White){
 					canvas.drawCircle(cell.getCx(), cell.getCy(), w, mPaintCellFgW);
 				} else {
-					showHints(cell, canvas, cw);
+					showHints(cell, canvas, cw, show_hints);
 				}
 			}
 		}
 	}
 	
-	private void showHints(Cell cell, Canvas canvas, float cw){
-		if (!Pref.getShowHints(getContext())){
+	private void showHints(Cell cell, Canvas canvas, float cw, boolean show_hints){
+		if (!show_hints){
 			return;
 		}
 
