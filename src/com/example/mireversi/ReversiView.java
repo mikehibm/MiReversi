@@ -51,8 +51,8 @@ public class ReversiView extends View {
 		mPaintCellAvB.setAntiAlias(true);
 		mPaintCellAvW.setAntiAlias(true);
 
-		mPaintCellAvB.setAlpha(16);
-		mPaintCellAvW.setAlpha(32);
+		mPaintCellAvB.setAlpha(32);
+		mPaintCellAvW.setAlpha(64);
 }
 	
 	public void init(){

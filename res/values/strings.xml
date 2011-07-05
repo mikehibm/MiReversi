@@ -11,4 +11,6 @@
     <string name="pref_show_hints">ヒントを表示</string>  
     <string name="pref_show_hints_on">表示する</string>  
     <string name="pref_show_hints_off">表示しない</string>  
+    <string name="pref_show_hints_default">true</string>  
 </resources>
+ 

@@ -3,11 +3,12 @@
   xmlns:android="http://schemas.android.com/apk/res/android" android:orderingFromXml="true">
 
     <PreferenceCategory android:orderingFromXml="true" 
-    	android:title="@string/pref_cat_general">
+    	android:title="@string/pref_cat_general"> 
     
     	<CheckBoxPreference
     		android:title="@string/pref_show_hints"
-    		android:key="show_hints" />
+    		android:key="show_hints" 
+    		android:defaultValue="@string/pref_show_hints_default"/>
 
     </PreferenceCategory>
     

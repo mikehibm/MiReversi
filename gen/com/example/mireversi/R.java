@@ -41,6 +41,7 @@ public final class R {
         public static final int mnu_stat=0x7f060003;
         public static final int pref_cat_general=0x7f060005;
         public static final int pref_show_hints=0x7f060006;
+        public static final int pref_show_hints_default=0x7f060009;
         public static final int pref_show_hints_off=0x7f060008;
         public static final int pref_show_hints_on=0x7f060007;
     }
