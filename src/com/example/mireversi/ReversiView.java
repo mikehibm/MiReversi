@@ -207,15 +207,23 @@ public class ReversiView extends View {
 	
 	private void drawStatus(Canvas canvas){
 		String s = "Turn: ";
-		if (mBoard.getTurn() == E_STATUS.Black){
-			s += "Black";
-		}
-		else{
-			s += "White";
-		}
+//		if (mBoard.getTurn() == E_STATUS.Black){
+//			s += "Black";
+//		}
+//		else{
+//			s += "White";
+//		}
 		
 		canvas.drawText(s, 10.0f, mBoard.getRectF().bottom + 40f, mPaintTextFg);
 		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
+
+		if (mBoard.getTurn() == E_STATUS.Black){
+			canvas.drawCircle(100f, mBoard.getRectF().bottom + 30f, mBoard.getCellWidth()*0.42f, mPaintCellFgB);
+		} else {
+			canvas.drawCircle(100f, mBoard.getRectF().bottom + 30f, mBoard.getCellWidth()*0.42f, mPaintCellFgB);
+			canvas.drawCircle(100f, mBoard.getRectF().bottom + 30f, mBoard.getCellWidth()*0.40f, mPaintCellFgW);
+		}
+
 	}
 	
 	private void drawHints(Cell cell, Canvas canvas, float cw, boolean show_hints){
