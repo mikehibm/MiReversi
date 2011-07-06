@@ -7,8 +7,10 @@ import com.example.mireversi.model.Cell;
 import com.example.mireversi.model.Cell.E_STATUS;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -25,12 +27,17 @@ public class ReversiView extends View {
 
 	private Board mBoard = new Board();
 	
+	private Paint mPaintScreenBg = new Paint();
 	private Paint mPaintBoardBg = new Paint();
 	private Paint mPaintBoardBorder = new Paint();
 	private Paint mPaintCellFgB = new Paint();
 	private Paint mPaintCellFgW = new Paint();
 	private Paint mPaintCellAvB = new Paint();
 	private Paint mPaintCellAvW = new Paint();
+	private Paint mPaintTextFg = new Paint();
+	
+	private int mWidth;
+	private int mHeight;
 
 	public ReversiView(Context context) {
 		super(context);
@@ -38,14 +45,16 @@ public class ReversiView extends View {
 		setId(VIEW_ID);
 		setFocusable(true);
 		
+		mPaintScreenBg.setColor(getResources().getColor(R.color.screen_bg));
 		mPaintBoardBg.setColor(getResources().getColor(R.color.board_bg));
 		mPaintBoardBorder.setColor(getResources().getColor(R.color.board_border));
 		mPaintCellFgB.setColor(getResources().getColor(R.color.cell_fg_black));
 		mPaintCellFgW.setColor(getResources().getColor(R.color.cell_fg_white));
 		mPaintCellAvB.setColor(getResources().getColor(R.color.cell_fg_black));
 		mPaintCellAvW.setColor(getResources().getColor(R.color.cell_fg_white));
+		mPaintTextFg.setColor(getResources().getColor(R.color.text_fg));
 
-		//アンチエイリアスを指定。これをしないと円がギザギザになる。
+		//アンチエイリアスを指定。これをしないと縁がギザギザになる。
 		mPaintCellFgB.setAntiAlias(true);
 		mPaintCellFgW.setAntiAlias(true);
 		mPaintCellAvB.setAntiAlias(true);
@@ -53,7 +62,17 @@ public class ReversiView extends View {
 
 		mPaintCellAvB.setAlpha(32);
 		mPaintCellAvW.setAlpha(64);
-}
+		
+		mPaintTextFg.setAntiAlias(true);
+		mPaintTextFg.setStyle(Style.FILL);
+		
+		//参考URL:
+		// http://y-anz-m.blogspot.com/2010/02/android-multi-screen.html 
+		// http://y-anz-m.blogspot.com/2010/05/androiddimension.html
+		Resources res = getResources();  
+		int fontSize = res.getDimensionPixelSize(R.dimen.font_size_status); 
+		mPaintTextFg.setTextSize(fontSize);
+	}
 	
 	public void init(){
 		mBoard = new Board();
@@ -64,7 +83,9 @@ public class ReversiView extends View {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		
-		mBoard.setSize(getWidth(), getHeight());
+		this.mWidth = getWidth();
+		this.mHeight = getHeight();
+		mBoard.setSize(this.mWidth, this.mHeight);
 		
 		drawBoard(canvas);
 	}
@@ -149,6 +170,9 @@ public class ReversiView extends View {
 		float w = cw * 0.42f;
 		boolean show_hints = Pref.getShowHints(getContext());
 
+		//画面全体の背景
+		canvas.drawRect(0 ,0, mWidth, mHeight, mPaintScreenBg);
+
 		//ボードの背景
 		canvas.drawRect(mBoard.getRectF(), mPaintBoardBg);
 
@@ -173,13 +197,28 @@ public class ReversiView extends View {
 				} else if(st == E_STATUS.White){
 					canvas.drawCircle(cell.getCx(), cell.getCy(), w, mPaintCellFgW);
 				} else {
-					showHints(cell, canvas, cw, show_hints);
+					drawHints(cell, canvas, cw, show_hints);
 				}
 			}
 		}
+		
+		drawStatus(canvas);
 	}
 	
-	private void showHints(Cell cell, Canvas canvas, float cw, boolean show_hints){
+	private void drawStatus(Canvas canvas){
+		String s = "Turn: ";
+		if (mBoard.getTurn() == E_STATUS.Black){
+			s += "Black";
+		}
+		else{
+			s += "White";
+		}
+		
+		canvas.drawText(s, 10.0f, mBoard.getRectF().bottom + 40f, mPaintTextFg);
+		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
+	}
+	
+	private void drawHints(Cell cell, Canvas canvas, float cw, boolean show_hints){
 		if (!show_hints){
 			return;
 		}
