@@ -18,6 +18,7 @@ public final class R {
         public static final int cell_fg_white=0x7f050004;
         public static final int screen_bg=0x7f050000;
         public static final int text_fg=0x7f050006;
+        public static final int turn_rect=0x7f050007;
     }
     public static final class dimen {
         public static final int font_size_status=0x7f060000;

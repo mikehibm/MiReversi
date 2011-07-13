@@ -10,4 +10,5 @@
 	<color name="cell_bg_available">#FFCCCC</color>    
 
 	<color name="text_fg">#404040</color>    
+	<color name="turn_rect">#0000C0</color>    
 </resources>

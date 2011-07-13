@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.Paint.Style;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -35,6 +36,7 @@ public class ReversiView extends View {
 	private Paint mPaintCellAvB = new Paint();
 	private Paint mPaintCellAvW = new Paint();
 	private Paint mPaintTextFg = new Paint();
+	private Paint mPaintTurnRect = new Paint();
 	
 	private int mWidth;
 	private int mHeight;
@@ -53,6 +55,7 @@ public class ReversiView extends View {
 		mPaintCellAvB.setColor(getResources().getColor(R.color.cell_fg_black));
 		mPaintCellAvW.setColor(getResources().getColor(R.color.cell_fg_white));
 		mPaintTextFg.setColor(getResources().getColor(R.color.text_fg));
+		mPaintTurnRect.setColor(getResources().getColor(R.color.turn_rect));
 
 		//アンチエイリアスを指定。これをしないと縁がギザギザになる。
 		mPaintCellFgB.setAntiAlias(true);
@@ -72,6 +75,10 @@ public class ReversiView extends View {
 		Resources res = getResources();  
 		int fontSize = res.getDimensionPixelSize(R.dimen.font_size_status); 
 		mPaintTextFg.setTextSize(fontSize);
+		
+		mPaintTurnRect.setAlpha(128);
+		mPaintTurnRect.setStyle(Style.STROKE);
+		mPaintTurnRect.setStrokeWidth(3f);
 	}
 	
 	public void init(){
@@ -206,24 +213,33 @@ public class ReversiView extends View {
 	}
 	
 	private void drawStatus(Canvas canvas){
-		String s = "Turn: ";
-//		if (mBoard.getTurn() == E_STATUS.Black){
-//			s += "Black";
-//		}
-//		else{
-//			s += "White";
-//		}
+		float top = mBoard.getRectF().bottom;
+		float center = mBoard.getRectF().width() / 2f;
 		
-		canvas.drawText(s, 10.0f, mBoard.getRectF().bottom + 40f, mPaintTextFg);
-		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
-
+		RectF rect;
 		if (mBoard.getTurn() == E_STATUS.Black){
-			canvas.drawCircle(100f, mBoard.getRectF().bottom + 30f, mBoard.getCellWidth()*0.42f, mPaintCellFgB);
+			rect = new RectF(0, top+5f, center-5f, mHeight-3f);
 		} else {
-			canvas.drawCircle(100f, mBoard.getRectF().bottom + 30f, mBoard.getCellWidth()*0.42f, mPaintCellFgB);
-			canvas.drawCircle(100f, mBoard.getRectF().bottom + 30f, mBoard.getCellWidth()*0.40f, mPaintCellFgW);
+			rect = new RectF(center, top+5f, mWidth-5f, mHeight-3f);
 		}
+		mPaintTurnRect.setStyle(Style.FILL);
+		mPaintTurnRect.setAlpha(64);
+		canvas.drawRoundRect(rect, 6f, 6f, mPaintTurnRect);
+		mPaintTurnRect.setStyle(Style.STROKE);
+		mPaintTurnRect.setAlpha(255);
+		canvas.drawRoundRect(rect, 6f, 6f, mPaintTurnRect);
 
+
+		canvas.drawCircle(20f, top + 30f, mBoard.getCellWidth()*0.42f, mPaintCellFgB);
+		String s = String.valueOf(mBoard.countCells(E_STATUS.Black));
+		canvas.drawText(s, 50f, top + 40f, mPaintTextFg);
+
+		canvas.drawCircle(center + 20f, top + 30f, mBoard.getCellWidth()*0.42f, mPaintCellFgB);
+		canvas.drawCircle(center + 20f, top + 30f, mBoard.getCellWidth()*0.40f, mPaintCellFgW);
+		s = String.valueOf(mBoard.countCells(E_STATUS.White));
+		canvas.drawText(s, center + 50f, top + 40f, mPaintTextFg);
+
+		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
 	}
 	
 	private void drawHints(Cell cell, Canvas canvas, float cw, boolean show_hints){
