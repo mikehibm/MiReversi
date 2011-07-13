@@ -22,6 +22,12 @@ public final class R {
     }
     public static final class dimen {
         public static final int font_size_status=0x7f060000;
+        public static final int turn_circle_x=0x7f060003;
+        public static final int turn_circle_y=0x7f060004;
+        public static final int turn_rect_inset=0x7f060001;
+        public static final int turn_rect_round=0x7f060002;
+        public static final int turn_text_x=0x7f060005;
+        public static final int turn_text_y=0x7f060006;
     }
     public static final class drawable {
         public static final int icon=0x7f020000;

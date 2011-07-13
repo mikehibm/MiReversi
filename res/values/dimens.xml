@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>  
 <resources>  
   <dimen name="font_size_status">24sp</dimen>  
+  
+  <dimen name="turn_rect_inset">8dp</dimen>  
+  <dimen name="turn_rect_round">10dp</dimen>
+    
+  <dimen name="turn_circle_x">36dp</dimen>  
+  <dimen name="turn_circle_y">38dp</dimen>
+    
+  <dimen name="turn_text_x">64dp</dimen>  
+  <dimen name="turn_text_y">46dp</dimen>  
 </resources>  

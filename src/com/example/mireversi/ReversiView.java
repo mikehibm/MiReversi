@@ -40,6 +40,7 @@ public class ReversiView extends View {
 	
 	private int mWidth;
 	private int mHeight;
+	private static final float CELL_SIZE_FACTOR = 0.42f;
 
 	public ReversiView(Context context) {
 		super(context);
@@ -76,9 +77,10 @@ public class ReversiView extends View {
 		int fontSize = res.getDimensionPixelSize(R.dimen.font_size_status); 
 		mPaintTextFg.setTextSize(fontSize);
 		
+		mPaintTurnRect.setAntiAlias(true);
 		mPaintTurnRect.setAlpha(128);
 		mPaintTurnRect.setStyle(Style.STROKE);
-		mPaintTurnRect.setStrokeWidth(3f);
+		mPaintTurnRect.setStrokeWidth(5f);
 	}
 	
 	public void init(){
@@ -174,7 +176,7 @@ public class ReversiView extends View {
 		float bh = mBoard.getRectF().height();
 		float cw = mBoard.getCellWidth();
 		float ch = mBoard.getCellHeidht();
-		float w = cw * 0.42f;
+		float w = cw * CELL_SIZE_FACTOR;
 		boolean show_hints = Pref.getShowHints(getContext());
 
 		//画面全体の背景
@@ -213,31 +215,38 @@ public class ReversiView extends View {
 	}
 	
 	private void drawStatus(Canvas canvas){
+		Resources res = getResources();  
+		float turn_rect_inset = res.getDimension(R.dimen.turn_rect_inset); 
+		float turn_rect_round = res.getDimension(R.dimen.turn_rect_round); 
+		float turn_circle_x = res.getDimension(R.dimen.turn_circle_x); 
+		float turn_circle_y = res.getDimension(R.dimen.turn_circle_y); 
+		float turn_text_x = res.getDimension(R.dimen.turn_text_x); 
+		float turn_text_y = res.getDimension(R.dimen.turn_text_y); 
 		float top = mBoard.getRectF().bottom;
 		float center = mBoard.getRectF().width() / 2f;
 		
 		RectF rect;
 		if (mBoard.getTurn() == E_STATUS.Black){
-			rect = new RectF(0, top+5f, center-5f, mHeight-3f);
+			rect = new RectF(turn_rect_inset, top + turn_rect_inset, center - turn_rect_inset, mHeight - turn_rect_inset);
 		} else {
-			rect = new RectF(center, top+5f, mWidth-5f, mHeight-3f);
+			rect = new RectF(center + turn_rect_inset, top + turn_rect_inset, mWidth - turn_rect_inset, mHeight - turn_rect_inset);
 		}
 		mPaintTurnRect.setStyle(Style.FILL);
 		mPaintTurnRect.setAlpha(64);
-		canvas.drawRoundRect(rect, 6f, 6f, mPaintTurnRect);
+		canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintTurnRect);
 		mPaintTurnRect.setStyle(Style.STROKE);
 		mPaintTurnRect.setAlpha(255);
-		canvas.drawRoundRect(rect, 6f, 6f, mPaintTurnRect);
+		canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintTurnRect);
 
 
-		canvas.drawCircle(20f, top + 30f, mBoard.getCellWidth()*0.42f, mPaintCellFgB);
+		canvas.drawCircle(turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellFgB);
 		String s = String.valueOf(mBoard.countCells(E_STATUS.Black));
-		canvas.drawText(s, 50f, top + 40f, mPaintTextFg);
+		canvas.drawText(s, turn_text_x, top + turn_text_y, mPaintTextFg);
 
-		canvas.drawCircle(center + 20f, top + 30f, mBoard.getCellWidth()*0.42f, mPaintCellFgB);
-		canvas.drawCircle(center + 20f, top + 30f, mBoard.getCellWidth()*0.40f, mPaintCellFgW);
+		canvas.drawCircle(center + turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellFgB);
+		canvas.drawCircle(center + turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR * 0.94f, mPaintCellFgW);
 		s = String.valueOf(mBoard.countCells(E_STATUS.White));
-		canvas.drawText(s, center + 50f, top + 40f, mPaintTextFg);
+		canvas.drawText(s, center + turn_text_x, top + turn_text_y, mPaintTextFg);
 
 		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
 	}
