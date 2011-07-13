@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="screen_bg">#FFFF99</color>    
+	<color name="screen_bg">#AABBBB</color>    
 
 	<color name="board_bg">#00B400</color>    
 	<color name="board_border">#282828</color>    
@@ -10,5 +10,5 @@
 	<color name="cell_bg_available">#FFCCCC</color>    
 
 	<color name="text_fg">#404040</color>    
-	<color name="turn_rect">#0000C0</color>    
+	<color name="turn_rect">#FFFFFF</color>    
 </resources>

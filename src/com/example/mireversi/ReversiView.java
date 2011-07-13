@@ -232,11 +232,11 @@ public class ReversiView extends View {
 			rect = new RectF(center + turn_rect_inset, top + turn_rect_inset, mWidth - turn_rect_inset, mHeight - turn_rect_inset);
 		}
 		mPaintTurnRect.setStyle(Style.FILL);
-		mPaintTurnRect.setAlpha(64);
-		canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintTurnRect);
+		mPaintTurnRect.setAlpha(128);
+		canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintTurnRect);	//背景
 		mPaintTurnRect.setStyle(Style.STROKE);
 		mPaintTurnRect.setAlpha(255);
-		canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintTurnRect);
+		canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintTurnRect);	//枠
 
 
 		canvas.drawCircle(turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellFgB);
