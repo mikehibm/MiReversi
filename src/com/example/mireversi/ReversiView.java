@@ -211,9 +211,29 @@ public class ReversiView extends View {
 			}
 		}
 		
+		//手番の表示、現在の黒と白の数の表示
 		drawStatus(canvas);
 	}
 	
+	private void drawHints(Cell cell, Canvas canvas, float cw, boolean show_hints){
+		if (!show_hints){
+			return;
+		}
+
+		float aw = cw * 0.1f;
+
+		//次に配置可能なセルであれば小さな丸を表示する
+		if (cell.getReversibleCells().size() > 0){
+			if (mBoard.getTurn() == Cell.E_STATUS.Black){
+				canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintCellAvB);
+			} else {
+				canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintCellAvW);
+			}
+		} else {
+			canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintBoardBg);
+		}
+	}
+
 	private void drawStatus(Canvas canvas){
 		Resources res = getResources();  
 		float turn_rect_inset = res.getDimension(R.dimen.turn_rect_inset); 
@@ -251,24 +271,6 @@ public class ReversiView extends View {
 		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
 	}
 	
-	private void drawHints(Cell cell, Canvas canvas, float cw, boolean show_hints){
-		if (!show_hints){
-			return;
-		}
-
-		float aw = cw * 0.1f;
-
-		if (cell.getReversibleCells().size() > 0){
-			if (mBoard.getTurn() == Cell.E_STATUS.Black){
-				canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintCellAvB);
-			} else {
-				canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintCellAvW);
-			}
-		} else {
-			canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintBoardBg);
-		}
-	}
-
 	@Override
 	protected Parcelable onSaveInstanceState() {
 		Parcelable p = super.onSaveInstanceState();
