@@ -3,6 +3,7 @@ package com.example.mireversi.model;
 import java.util.ArrayList;
 import java.util.List;
 import android.graphics.RectF;
+import android.text.TextUtils;
 import android.util.Log;
 import com.example.mireversi.exceptions.*;
 import com.example.mireversi.model.Cell.E_STATUS;
@@ -109,6 +110,14 @@ public class Board {
 		return this.turn;
 	}
 	
+	public boolean isFinished(){
+		return (this.turn == E_STATUS.None);
+	}
+	
+	public void setFinished(){
+		this.turn = E_STATUS.None;
+	}
+	
 	public int changeTurn(List<Cell> changedCells){
 		if (this.turn == E_STATUS.Black){
 			this.turn = E_STATUS.White;
@@ -155,8 +164,8 @@ public class Board {
 		return n;
 	}
 	
-	public boolean isFinished(){
-		return (countCells(E_STATUS.None) == 0);
+	public int countBlankCells(){
+		return countCells(E_STATUS.None);
 	}
 	
 	public Cell.E_STATUS getWinner(){
@@ -202,6 +211,7 @@ public class Board {
 	 * @param s
 	 */
 	public void loadFromStateString(String s){
+		if (TextUtils.isEmpty(s)) return;
 		
 		this.turn = Cell.stringToStatus(s.substring(0, 1));
 		

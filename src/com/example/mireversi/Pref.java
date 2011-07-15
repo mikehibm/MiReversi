@@ -2,6 +2,7 @@ package com.example.mireversi;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -9,6 +10,7 @@ import android.preference.PreferenceManager;
 public class Pref  extends PreferenceActivity{
 	
 	private static final String KEY_SHOW_HINTS = "show_hints";
+	private static final String KEY_STATE = "status";
 	
 	private SharedPreferences mSharedPreferences = null;
 	
@@ -24,10 +26,24 @@ public class Pref  extends PreferenceActivity{
     
     public static boolean getShowHints(Context con){
     	boolean def_value = Boolean.valueOf(con.getString(R.string.pref_show_hints_default));
-    	boolean value = PreferenceManager.getDefaultSharedPreferences(con).getBoolean(KEY_SHOW_HINTS, def_value);
+    	boolean value = PreferenceManager.getDefaultSharedPreferences(con)
+    						.getBoolean(KEY_SHOW_HINTS, def_value);
     	return value;
     }
     
+    public static String getState(Context con){
+    	String value = PreferenceManager.getDefaultSharedPreferences(con)
+    						.getString(KEY_STATE, "");
+    	return value;
+    }
+    
+    public static void setState(Context con, String value){
+    	SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(con);
+    	Editor editor = sp.edit();
+    	editor.putString(KEY_STATE, value);
+    	editor.commit();
+    }
+
 	private void dispSummary(){
 		String s;
 		

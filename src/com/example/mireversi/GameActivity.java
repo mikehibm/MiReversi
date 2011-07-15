@@ -19,7 +19,21 @@ public class GameActivity extends Activity{
 		setContentView(reversiview);
 
 	}
+	
+	@Override
+	protected void onPause() {
+		Pref.setState(this.getApplicationContext(), reversiview.getState());
+		
+		super.onPause();
+	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		reversiview.setState(Pref.getState(this.getApplicationContext()));
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();

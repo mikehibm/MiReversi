@@ -12,8 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Paint.Style;
-import android.os.Bundle;
-import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,8 +21,8 @@ import android.widget.Toast;
 public class ReversiView extends View {
 
 	private static final String TAG = "ReversiView";
-	private static final String STATE_VIEW = "View";
-	private static final String STATE_CELLS = "Cells";
+//	private static final String STATE_VIEW = "View";
+//	private static final String STATE_CELLS = "Cells";
 	private static final int VIEW_ID = 1000;
 
 	private Board mBoard = new Board();
@@ -116,13 +115,13 @@ public class ReversiView extends View {
 					
 					int nextAvailableCellCount = mBoard.changeTurn(changedCells); 
 					if (nextAvailableCellCount == 0){
-						if (mBoard.isFinished()){				//全部のセルが埋まった場合、
-							showCountsToast();						//結果を表示。
+						if (mBoard.countBlankCells() == 0){				//全部のセルが埋まった場合は終了
+							finish();											
 						} else {
-							showSkippMessage();
+							showSkippMessage();					//スキップ
 							nextAvailableCellCount = mBoard.changeTurn(changedCells);
-							if (nextAvailableCellCount == 0){	//どちらも打つ場所が無くなった場合、
-								showCountsToast();					//結果を表示
+							if (nextAvailableCellCount == 0){	//どちらも打つ場所が無くなった場合は終了
+								finish();							
 							}
 						}
 					}
@@ -143,6 +142,11 @@ public class ReversiView extends View {
 		}
 		
 		return true;
+	}
+	
+	private void finish(){
+		mBoard.setFinished();
+		showCountsToast();
 	}
 
 	public void showCountsToast(){
@@ -271,26 +275,38 @@ public class ReversiView extends View {
 		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
 	}
 	
-	@Override
-	protected Parcelable onSaveInstanceState() {
-		Parcelable p = super.onSaveInstanceState();
-		
-		Bundle b = new Bundle();
-		String boardState = mBoard.getStateString();
-		b.putString(STATE_CELLS, boardState);						//Boardの状態を保存。
-Log.d(TAG, "onSaveInstanceState: boardState=" + boardState);
-		b.putParcelable(STATE_VIEW, p);
-		return b;
+//	@Override
+//	protected Parcelable onSaveInstanceState() {
+//		Parcelable p = super.onSaveInstanceState();
+//		
+//		Bundle b = new Bundle();
+//		String boardState = mBoard.getStateString();
+//		b.putString(STATE_CELLS, boardState);						//Boardの状態を保存。
+//Log.d(TAG, "onSaveInstanceState: value=" + boardState);
+//		b.putParcelable(STATE_VIEW, p);
+//		return b;
+//	}
+//	
+//	@Override
+//	protected void onRestoreInstanceState(Parcelable state) {
+//		Bundle b = (Bundle)state;
+//		String boardState = b.getString(STATE_CELLS);
+//Log.d(TAG, "onRestoreInstanceState: value=" + boardState);
+//		mBoard.loadFromStateString(boardState);					//Boardの状態を復元。
+//		
+//		super.onRestoreInstanceState(b.getParcelable(STATE_VIEW));
+//	}
+	
+	public String getState(){
+		String s = mBoard.getStateString();
+Log.d(TAG, "onPause: value=" + s);
+		return s;
 	}
 	
-	@Override
-	protected void onRestoreInstanceState(Parcelable state) {
-		Bundle b = (Bundle)state;
-		String boardState = b.getString(STATE_CELLS);
-Log.d(TAG, "onRestoreInstanceState: boardState=" + boardState);
-		mBoard.loadFromStateString(boardState);					//Boardの状態を復元。
+	public void setState(String value){
+		if (TextUtils.isEmpty(value)) return;
 		
-		super.onRestoreInstanceState(b.getParcelable(STATE_VIEW));
+Log.d(TAG, "onResume: value=" + value);
+		mBoard.loadFromStateString(value);
 	}
-	
 }
