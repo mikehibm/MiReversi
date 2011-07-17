@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.example.mireversi.model.Board;
 import com.example.mireversi.model.Cell;
+import com.example.mireversi.model.HumanPlayer;
+import com.example.mireversi.model.Player;
 import com.example.mireversi.model.Cell.E_STATUS;
 
 import android.content.Context;
@@ -25,7 +27,7 @@ public class ReversiView extends View {
 //	private static final String STATE_CELLS = "Cells";
 	private static final int VIEW_ID = 1000;
 
-	private Board mBoard = new Board();
+	private Board mBoard;
 	
 	private Paint mPaintScreenBg = new Paint();
 	private Paint mPaintBoardBg = new Paint();
@@ -80,10 +82,19 @@ public class ReversiView extends View {
 		mPaintTurnRect.setAlpha(128);
 		mPaintTurnRect.setStyle(Style.STROKE);
 		mPaintTurnRect.setStrokeWidth(5f);
+
+		init();
 	}
 	
 	public void init(){
 		mBoard = new Board();
+		
+		Player player1 = new HumanPlayer(E_STATUS.Black, "Human");
+		Player player2 = new HumanPlayer(E_STATUS.White, "Novice");
+		
+		mBoard.setPlayer1(player1);
+		mBoard.setPlayer2(player2);
+		
 		invalidate();
 	}
 	
@@ -108,33 +119,7 @@ public class ReversiView extends View {
 			int r = (int)(y / mBoard.getCellHeidht());
 			int c = (int)(x / mBoard.getCellWidth());
 			if (r < Board.ROWS && c < Board.COLS){
-				List<Cell> changedCells = null;
-				
-				try {
-					changedCells = mBoard.changeCell(r, c, mBoard.getTurn());
-					
-					int nextAvailableCellCount = mBoard.changeTurn(changedCells); 
-					if (nextAvailableCellCount == 0){
-						if (mBoard.countBlankCells() == 0){				//全部のセルが埋まった場合は終了
-							finish();											
-						} else {
-							showSkippMessage();					//スキップ
-							nextAvailableCellCount = mBoard.changeTurn(changedCells);
-							if (nextAvailableCellCount == 0){	//どちらも打つ場所が無くなった場合は終了
-								finish();							
-							}
-						}
-					}
-				} catch (Exception e) {
-					//Toast.makeText(this.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-					Log.d(TAG, e.getMessage());
-				}
-
-				if (changedCells != null){
-					for (Cell cell : changedCells) {
-						invalidate(cell.getRect());			//変更された領域のみを再描画
-					}
-				}
+				move(r, c);
 			}
 			break;
 		default:
@@ -142,6 +127,36 @@ public class ReversiView extends View {
 		}
 		
 		return true;
+	}
+
+	private void move(int r, int c){
+		List<Cell> changedCells = null;
+		
+		try {
+			changedCells = mBoard.changeCell(r, c, mBoard.getTurn());
+			
+			int nextAvailableCellCount = mBoard.changeTurn(changedCells); 
+			if (nextAvailableCellCount == 0){
+				if (mBoard.countBlankCells() == 0){				//全部のセルが埋まった場合は終了
+					finish();											
+				} else {
+					showSkippMessage();					//スキップ
+					nextAvailableCellCount = mBoard.changeTurn(changedCells);
+					if (nextAvailableCellCount == 0){	//どちらも打つ場所が無くなった場合は終了
+						finish();							
+					}
+				}
+			}
+		} catch (Exception e) {
+			//Toast.makeText(this.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+			Log.d(TAG, e.getMessage());
+		}
+
+		if (changedCells != null){
+			for (Cell cell : changedCells) {
+				invalidate(cell.getRect());			//変更された領域のみを再描画
+			}
+		}
 	}
 	
 	private void finish(){
@@ -265,12 +280,14 @@ public class ReversiView extends View {
 
 		canvas.drawCircle(turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellFgB);
 		String s = String.valueOf(mBoard.countCells(E_STATUS.Black));
-		canvas.drawText(s, turn_text_x, top + turn_text_y, mPaintTextFg);
+		canvas.drawText(s, turn_text_x, top + turn_text_y, mPaintTextFg);					//黒のコマ数
+		canvas.drawText(mBoard.getPlayer1().getName(), turn_circle_x, top + turn_text_y*2, mPaintTextFg);					//黒のコマ数
 
 		canvas.drawCircle(center + turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellFgB);
 		canvas.drawCircle(center + turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR * 0.94f, mPaintCellFgW);
 		s = String.valueOf(mBoard.countCells(E_STATUS.White));
-		canvas.drawText(s, center + turn_text_x, top + turn_text_y, mPaintTextFg);
+		canvas.drawText(s, center + turn_text_x, top + turn_text_y, mPaintTextFg);		//白のコマ数
+		canvas.drawText(mBoard.getPlayer2().getName(), center + turn_circle_x, top + turn_text_y*2, mPaintTextFg);					//黒のコマ数
 
 		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
 	}
