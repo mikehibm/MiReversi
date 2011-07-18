@@ -58,6 +58,14 @@ public class Cell {
 		return st;
 	}
 	
+	public int getX(){
+		return this.x;
+	}
+	
+	public int getY(){
+		return this.y;
+	}
+	
 	public void setRectF(RectF rect) {
 		this.rect = rect;
 	}

@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.example.mireversi.model.Board;
 import com.example.mireversi.model.Cell;
+import com.example.mireversi.model.ComputerPlayerNovice;
 import com.example.mireversi.model.HumanPlayer;
+import com.example.mireversi.model.IPlayerCallback;
 import com.example.mireversi.model.Player;
 import com.example.mireversi.model.Cell.E_STATUS;
 
@@ -20,7 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-public class ReversiView extends View {
+public class ReversiView extends View implements IPlayerCallback {
 
 	private static final String TAG = "ReversiView";
 //	private static final String STATE_VIEW = "View";
@@ -89,13 +91,18 @@ public class ReversiView extends View {
 	public void init(){
 		mBoard = new Board();
 		
-		Player player1 = new HumanPlayer(E_STATUS.Black, "Human");
-		Player player2 = new HumanPlayer(E_STATUS.White, "Novice");
+		Player player1 = new HumanPlayer(E_STATUS.Black, "Human", mBoard);
+		Player player2 = new ComputerPlayerNovice(E_STATUS.White, "Novice", mBoard);
 		
 		mBoard.setPlayer1(player1);
 		mBoard.setPlayer2(player2);
 		
 		invalidate();
+		
+		Player p = mBoard.getCurrentPlayer();
+		if (p != null && !p.isHuman()){
+			mBoard.getCurrentPlayer().StartThinking(this);
+		}
 	}
 	
 	@Override
@@ -119,7 +126,9 @@ public class ReversiView extends View {
 			int r = (int)(y / mBoard.getCellHeidht());
 			int c = (int)(x / mBoard.getCellWidth());
 			if (r < Board.ROWS && c < Board.COLS){
-				move(r, c);
+				if (mBoard.getCurrentPlayer().isHuman()){
+					move(r, c);
+				}
 			}
 			break;
 		default:
@@ -147,6 +156,12 @@ public class ReversiView extends View {
 					}
 				}
 			}
+			
+			Player p = mBoard.getCurrentPlayer();
+			if (p != null && !p.isHuman()){
+				p.StartThinking(this);
+			}
+			
 		} catch (Exception e) {
 			//Toast.makeText(this.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
 			Log.d(TAG, e.getMessage());
@@ -157,6 +172,13 @@ public class ReversiView extends View {
 				invalidate(cell.getRect());			//変更された領域のみを再描画
 			}
 		}
+	}
+	
+	@Override
+	public void onEndThinking(int r, int c) {
+		if (r < 0 && c < 0) return;
+		
+		move(r, c);
 	}
 	
 	private void finish(){
@@ -325,5 +347,11 @@ Log.d(TAG, "onPause: value=" + s);
 		
 Log.d(TAG, "onResume: value=" + value);
 		mBoard.loadFromStateString(value);
+
+		Player p = mBoard.getCurrentPlayer();
+		if (p != null && !p.isHuman()){
+			mBoard.getCurrentPlayer().StartThinking(this);
+		}
 	}
+
 }

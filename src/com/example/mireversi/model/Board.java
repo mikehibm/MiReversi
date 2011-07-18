@@ -247,4 +247,13 @@ public class Board {
 		return player2;
 	}
 
+	public Player getCurrentPlayer(){
+		Player p = null;
+		if (turn == E_STATUS.Black){
+			p = player1;
+		} else if (turn == E_STATUS.White){
+			p = player2;
+		}
+		return p;
+	}
 }

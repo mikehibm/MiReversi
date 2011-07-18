@@ -4,13 +4,17 @@ import com.example.mireversi.model.Cell.E_STATUS;
 
 public abstract class Player {
 	
-	private E_STATUS mTurn;
-	private String mName;
+	protected E_STATUS mTurn;
+	protected String mName;
+	protected Board mBoard;
 	
-	public Player(E_STATUS turn, String name){
+	public Player(E_STATUS turn, String name, Board board){
 		setTurn(turn);
 		setName(name);
+		mBoard = board;
 	}
+	
+	public abstract boolean isHuman();
 
 	public void setTurn(E_STATUS mTurn) {
 		this.mTurn = mTurn;
@@ -27,4 +31,10 @@ public abstract class Player {
 	public String getName() {
 		return mName;
 	}
+	
+	public abstract void StartThinking(IPlayerCallback callback);
+
 }
+
+
+
