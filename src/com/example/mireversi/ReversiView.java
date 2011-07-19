@@ -126,13 +126,13 @@ public class ReversiView extends View implements IPlayerCallback {
 			int r = (int)(y / mBoard.getCellHeidht());
 			int c = (int)(x / mBoard.getCellWidth());
 			if (r < Board.ROWS && c < Board.COLS){
-				if (mBoard.getCurrentPlayer().isHuman()){
+				Player p = mBoard.getCurrentPlayer();
+				if (p != null && p.isHuman()){
 					move(r, c);
 				}
 			}
 			break;
 		default:
-			return true;
 		}
 		
 		return true;
@@ -192,7 +192,11 @@ public class ReversiView extends View implements IPlayerCallback {
 			+ "White: " + mBoard.countCells(Cell.E_STATUS.White) + "\n\n";
 		
 		if (mBoard.isFinished()){
-			msg += "Winner is: " + Cell.statusToDisplay(winner) + "!!";
+			if (winner != Cell.E_STATUS.None){
+				msg += "Winner is: " + Cell.statusToDisplay(winner) + "!!";
+			} else {
+				msg += "Draw game!";
+			}
 		} else {
 			if (winner != Cell.E_STATUS.None){
 				msg += Cell.statusToDisplay(winner) + " is winning...\n\n";
