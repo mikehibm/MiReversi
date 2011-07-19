@@ -17,16 +17,12 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.Paint.Style;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
 public class ReversiView extends View implements IPlayerCallback {
 
-	private static final String TAG = "ReversiView";
-//	private static final String STATE_VIEW = "View";
-//	private static final String STATE_CELLS = "Cells";
 	private static final int VIEW_ID = 1000;
 
 	private Board mBoard;
@@ -86,10 +82,10 @@ public class ReversiView extends View implements IPlayerCallback {
 		mPaintTurnRect.setStyle(Style.STROKE);
 		mPaintTurnRect.setStrokeWidth(5f);
 
-		init();
+		init(false);
 	}
 	
-	public void init(){
+	public void init(boolean auto_start){
 		mBoard = new Board();
 		mPaused = false;
 		
@@ -101,7 +97,10 @@ public class ReversiView extends View implements IPlayerCallback {
 		
 		invalidate();
 		
-		callPlayer();
+		Utils.d("init");
+		if (auto_start){
+			callPlayer();
+		}
 	}
 	
 	@Override
@@ -160,7 +159,7 @@ public class ReversiView extends View implements IPlayerCallback {
 			
 		} catch (Exception e) {
 			//Toast.makeText(this.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-			Log.d(TAG, e.getMessage());
+			Utils.d(e.getMessage());
 		}
 
 		if (changedCells != null){
@@ -201,13 +200,13 @@ public class ReversiView extends View implements IPlayerCallback {
 			msg += mBoard.getTurnDisplay() + "'s turn.";
 		}
 		Toast.makeText(this.getContext(), msg, Toast.LENGTH_LONG).show();
-		Log.d(TAG, msg);
+		Utils.d(msg);
 	}
 	
 	private void showSkippMessage(){
 		String msg = Cell.statusToDisplay(mBoard.getTurn()) + " has been skipped.";
 		Toast.makeText(this.getContext(), msg, Toast.LENGTH_SHORT).show();
-		Log.d(TAG, msg);
+		Utils.d(msg);
 	}
 	
 	private void drawBoard(Canvas canvas){
@@ -315,31 +314,9 @@ public class ReversiView extends View implements IPlayerCallback {
 		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
 	}
 	
-//	@Override
-//	protected Parcelable onSaveInstanceState() {
-//		Parcelable p = super.onSaveInstanceState();
-//		
-//		Bundle b = new Bundle();
-//		String boardState = mBoard.getStateString();
-//		b.putString(STATE_CELLS, boardState);						//Boardの状態を保存。
-//Log.d(TAG, "onSaveInstanceState: value=" + boardState);
-//		b.putParcelable(STATE_VIEW, p);
-//		return b;
-//	}
-//	
-//	@Override
-//	protected void onRestoreInstanceState(Parcelable state) {
-//		Bundle b = (Bundle)state;
-//		String boardState = b.getString(STATE_CELLS);
-//Log.d(TAG, "onRestoreInstanceState: value=" + boardState);
-//		mBoard.loadFromStateString(boardState);					//Boardの状態を復元。
-//		
-//		super.onRestoreInstanceState(b.getParcelable(STATE_VIEW));
-//	}
-
 	public String getState(){
 		String s = mBoard.getStateString();
-		Log.d(TAG, "getState: state=" + s);
+		Utils.d("getState: state=" + s);
 		return s;
 	}
 	
@@ -354,7 +331,7 @@ public class ReversiView extends View implements IPlayerCallback {
 	}
 	
 	public void resume(String state){
-		Log.d(TAG, "onResume: state=" + state);
+		Utils.d("onResume: state=" + state);
 
 		mPaused = false;
 		if (!TextUtils.isEmpty(state)){

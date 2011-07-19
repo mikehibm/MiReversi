@@ -13,6 +13,7 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 	
 	public ComputerPlayer(E_STATUS turn, String name, Board board){
 		super(turn, name, board);
+		mStopped = false;
 	}
 
 	@Override
@@ -21,9 +22,9 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 	}
 
 	@Override
-	public void startThinking(IPlayerCallback callback) {
+	public synchronized void startThinking(IPlayerCallback callback) {
 		mCallback = callback;
-		setStopped(false);
+		mStopped = false;
 		
 		if (mBoard.getAvailableCellCount(true) == 0){
 			callback.onEndThinking(new Point(-1, -1));
@@ -36,12 +37,12 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 	}
 	
 	@Override
-	public void stopThinking() {
-		if (mThread != null && mThread.isAlive()){
-			mThread.interrupt();
-		}
-		
-		setStopped(true);
+	public synchronized void stopThinking() {
+		mStopped = true;
+
+//		if (mThread != null && mThread.isAlive()){
+//			mThread.interrupt();
+//		}
 	}
 
 	@Override

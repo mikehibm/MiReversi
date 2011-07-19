@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import android.graphics.RectF;
 import android.text.TextUtils;
-import android.util.Log;
+import com.example.mireversi.Utils;
 import com.example.mireversi.exceptions.*;
 import com.example.mireversi.model.Cell.E_STATUS;
 
@@ -14,7 +14,6 @@ import com.example.mireversi.model.Cell.E_STATUS;
  */
 public class Board {
 	
-	private static final String TAG = "Board";
 	public static final int COLS = 8;
 	public static final int ROWS = 8;
 	
@@ -219,7 +218,7 @@ public class Board {
 		}
 		
 		String s = str.toString();
-		Log.d(TAG, "getStateString:" + s);
+		Utils.d("getStateString:" + s);
 		return s;
 	}
 

@@ -15,6 +15,8 @@ public class GameActivity extends Activity{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		Utils.d("GameActivity.onCreate");
+		
 		reversiview = new ReversiView(this);
 		setContentView(reversiview);
 
@@ -22,6 +24,8 @@ public class GameActivity extends Activity{
 	
 	@Override
 	protected void onPause() {
+		Utils.d("GameActivity.onPause");
+
 		Pref.setState(this.getApplicationContext(), reversiview.getState());
 		
 		//別スレッドで思考ルーチンが動いていれば中断する。
@@ -32,6 +36,8 @@ public class GameActivity extends Activity{
 
 	@Override
 	protected void onResume() {
+		Utils.d("GameActivity.onResume");
+		
 		reversiview.resume(Pref.getState(this.getApplicationContext()));
 
 		super.onResume();
@@ -57,7 +63,7 @@ public class GameActivity extends Activity{
 			reversiview.showCountsToast();
 			break;
 		case R.id.mnuInit:
-			reversiview.init();
+			reversiview.init(true);
 			break;
 		default:
 			break;

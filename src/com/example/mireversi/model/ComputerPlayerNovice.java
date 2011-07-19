@@ -5,11 +5,11 @@ import java.util.Random;
 
 import android.graphics.Point;
 
+import com.example.mireversi.Utils;
 import com.example.mireversi.model.Cell.E_STATUS;
 
 public class ComputerPlayerNovice extends ComputerPlayer {
 
-	private static final String TAG = "MiReversi.ComputerPlayerNovice";
 
 	public ComputerPlayerNovice(E_STATUS turn, String name, Board board){
 		super(turn, name, board);
@@ -20,14 +20,17 @@ public class ComputerPlayerNovice extends ComputerPlayer {
 		Point pos = new Point(-1, -1);
 		
 		try {
-			Thread.sleep(1000);
+			Utils.d(this.getName() + ": Thread.sleep started.");
+			Thread.sleep(200);
 		} catch (InterruptedException e) {
 			setStopped(true);
 		}
+		Utils.d(this.getName() + ": Thread.sleep ended.");
 
-		if (isStopped()) return pos;
+		if (isStopped()) return pos;					//中断フラグが立っていたら抜ける。
 		
 		Cell[][] cells = mBoard.getCells();
+		
 		ArrayList<Cell> available_cells = new ArrayList<Cell>();
 		for (int i = 0; i< Board.ROWS; i++ ){
 			for (int j =0; j < Board.COLS; j++){
@@ -37,7 +40,7 @@ public class ComputerPlayerNovice extends ComputerPlayer {
 			}
 		}
 
-		if (isStopped()) return pos;
+		if (isStopped()) return pos;					//中断フラグが立っていたら抜ける。
 		
 		if (available_cells.size() > 0){
 			Random rnd = new Random();
