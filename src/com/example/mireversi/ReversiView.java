@@ -5,7 +5,6 @@ import java.util.List;
 import com.example.mireversi.model.Board;
 import com.example.mireversi.model.Cell;
 import com.example.mireversi.model.ComputerPlayerNovice;
-import com.example.mireversi.model.HumanPlayer;
 import com.example.mireversi.model.IPlayerCallback;
 import com.example.mireversi.model.Player;
 import com.example.mireversi.model.Cell.E_STATUS;
@@ -14,6 +13,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.Paint.Style;
 import android.text.TextUtils;
@@ -44,6 +44,7 @@ public class ReversiView extends View implements IPlayerCallback {
 	private int mWidth;
 	private int mHeight;
 	private static final float CELL_SIZE_FACTOR = 0.42f;
+	private boolean mPaused; 
 
 	public ReversiView(Context context) {
 		super(context);
@@ -90,19 +91,17 @@ public class ReversiView extends View implements IPlayerCallback {
 	
 	public void init(){
 		mBoard = new Board();
+		mPaused = false;
 		
-		Player player1 = new HumanPlayer(E_STATUS.Black, "Human", mBoard);
-		Player player2 = new ComputerPlayerNovice(E_STATUS.White, "Novice", mBoard);
+		Player player1 = new ComputerPlayerNovice(E_STATUS.Black, "Black", mBoard);
+		Player player2 = new ComputerPlayerNovice(E_STATUS.White, "White", mBoard);
 		
 		mBoard.setPlayer1(player1);
 		mBoard.setPlayer2(player2);
 		
 		invalidate();
 		
-		Player p = mBoard.getCurrentPlayer();
-		if (p != null && !p.isHuman()){
-			mBoard.getCurrentPlayer().StartThinking(this);
-		}
+		callPlayer();
 	}
 	
 	@Override
@@ -157,10 +156,7 @@ public class ReversiView extends View implements IPlayerCallback {
 				}
 			}
 			
-			Player p = mBoard.getCurrentPlayer();
-			if (p != null && !p.isHuman()){
-				p.StartThinking(this);
-			}
+			callPlayer();
 			
 		} catch (Exception e) {
 			//Toast.makeText(this.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -175,10 +171,11 @@ public class ReversiView extends View implements IPlayerCallback {
 	}
 	
 	@Override
-	public void onEndThinking(int r, int c) {
-		if (r < 0 && c < 0) return;
+	public void onEndThinking(Point pos) {
+		if (pos.y < 0 && pos.x < 0) return;
+		if (mPaused) return;
 		
-		move(r, c);
+		move(pos.y, pos.x);
 	}
 	
 	private void finish(){
@@ -339,23 +336,42 @@ public class ReversiView extends View implements IPlayerCallback {
 //		
 //		super.onRestoreInstanceState(b.getParcelable(STATE_VIEW));
 //	}
-	
+
 	public String getState(){
 		String s = mBoard.getStateString();
-Log.d(TAG, "onPause: value=" + s);
+		Log.d(TAG, "getState: state=" + s);
 		return s;
 	}
 	
-	public void setState(String value){
-		if (TextUtils.isEmpty(value)) return;
+	public void pause(){
+		mPaused = true;
 		
-Log.d(TAG, "onResume: value=" + value);
-		mBoard.loadFromStateString(value);
-
 		Player p = mBoard.getCurrentPlayer();
 		if (p != null && !p.isHuman()){
-			mBoard.getCurrentPlayer().StartThinking(this);
+			//別スレッドで思考ルーチンが動いていれば中断する。
+			p.stopThinking();
 		}
 	}
+	
+	public void resume(String state){
+		Log.d(TAG, "onResume: state=" + state);
+
+		mPaused = false;
+		if (!TextUtils.isEmpty(state)){
+			mBoard.loadFromStateString(state);
+		}
+
+		callPlayer();
+	}
+	
+	private void callPlayer(){
+		if (mPaused) return;
+		
+		Player p = mBoard.getCurrentPlayer();
+		if (p != null && !p.isHuman()){
+			p.startThinking(this);
+		}
+	}
+
 
 }

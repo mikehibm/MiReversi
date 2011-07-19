@@ -3,6 +3,8 @@ package com.example.mireversi.model;
 import java.util.ArrayList;
 import java.util.Random;
 
+import android.graphics.Point;
+
 import com.example.mireversi.model.Cell.E_STATUS;
 
 public class ComputerPlayerNovice extends ComputerPlayer {
@@ -14,10 +16,19 @@ public class ComputerPlayerNovice extends ComputerPlayer {
 	}
 
 	@Override
-	public void StartThinking(IPlayerCallback callback) {
+	protected Point think() {
+		Point pos = new Point(-1, -1);
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			setStopped(true);
+		}
+
+		if (isStopped()) return pos;
+		
 		Cell[][] cells = mBoard.getCells();
 		ArrayList<Cell> available_cells = new ArrayList<Cell>();
-		
 		for (int i = 0; i< Board.ROWS; i++ ){
 			for (int j =0; j < Board.COLS; j++){
 				if (cells[i][j].getReversibleCells().size() > 0){
@@ -26,12 +37,17 @@ public class ComputerPlayerNovice extends ComputerPlayer {
 			}
 		}
 
-		Random rnd = new Random();
-		int n = rnd.nextInt(available_cells.size());
-		Cell chosenCell = available_cells.get(n);
+		if (isStopped()) return pos;
 		
-		callback.onEndThinking(chosenCell.getY(), chosenCell.getX());
-
+		if (available_cells.size() > 0){
+			Random rnd = new Random();
+			int n = rnd.nextInt(available_cells.size());
+			Cell chosenCell = available_cells.get(n);
+			
+			pos = new Point(chosenCell.getX(), chosenCell.getY());
+		}
+		
+		return pos;
 	}
 
 }

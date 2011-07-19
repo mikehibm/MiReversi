@@ -1,5 +1,7 @@
 package com.example.mireversi.model;
 
+import android.graphics.Point;
+
 import com.example.mireversi.model.Cell.E_STATUS;
 
 public class HumanPlayer extends Player {
@@ -14,9 +16,15 @@ public class HumanPlayer extends Player {
 	}
 
 	@Override
-	public void StartThinking(IPlayerCallback callback) {
-		callback.onEndThinking(-1, -1);
+	public void startThinking(IPlayerCallback callback) {
+		callback.onEndThinking(new Point(-1, -1));
 	}
+
+	@Override
+	public void stopThinking() {
+		//Do nothing.
+	}
+
 
 
 }

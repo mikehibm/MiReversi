@@ -24,14 +24,17 @@ public class GameActivity extends Activity{
 	protected void onPause() {
 		Pref.setState(this.getApplicationContext(), reversiview.getState());
 		
+		//別スレッドで思考ルーチンが動いていれば中断する。
+		reversiview.pause();
+		
 		super.onPause();
 	}
 
 	@Override
 	protected void onResume() {
-		super.onResume();
+		reversiview.resume(Pref.getState(this.getApplicationContext()));
 
-		reversiview.setState(Pref.getState(this.getApplicationContext()));
+		super.onResume();
 	}
 	
 	@Override

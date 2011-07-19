@@ -170,6 +170,23 @@ public class Board {
 		return countCells(E_STATUS.None);
 	}
 	
+	public int getAvailableCellCount(boolean recalculate){
+		int n = 0;
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				Cell cell = cells[i][j];
+				if (recalculate){
+					//裏返されるセルのリストを再計算。
+					cell.setReversibleCells(this.turn);
+				}
+				if (cell.getReversibleCells().size() > 0){
+					n++;
+				}
+			}
+		}
+		return n;
+	}
+	
 	public Cell.E_STATUS getWinner(){
 		E_STATUS winner = E_STATUS.None;
 		int cntB = countCells(E_STATUS.Black);

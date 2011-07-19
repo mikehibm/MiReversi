@@ -32,8 +32,8 @@ public abstract class Player {
 		return mName;
 	}
 	
-	public abstract void StartThinking(IPlayerCallback callback);
-
+	public abstract void startThinking(IPlayerCallback callback);
+	public abstract void stopThinking();
 }
 
 
