@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
@@ -48,17 +49,79 @@ public class Pref  extends PreferenceActivity{
     	editor.commit();
     }
 
+    public static String getPlayer1(Context con){
+    	String value = PreferenceManager.getDefaultSharedPreferences(con)
+    						.getString(KEY_PLAYER1, con.getString(R.string.pref_player1_default));
+    	return value;
+    }
+    
+    public static void setPlayer1(Context con, String value){
+    	SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(con);
+    	Editor editor = sp.edit();
+    	editor.putString(KEY_PLAYER1, value);
+    	editor.commit();
+    }
+
+    public static String getPlayer1Name(Context con){
+    	String value = PreferenceManager.getDefaultSharedPreferences(con)
+    						.getString(KEY_PLAYER1_NAME, con.getString(R.string.pref_player1_name_default));
+    	return value;
+    }
+    
+    public static void setPlayer1Name(Context con, String value){
+    	SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(con);
+    	Editor editor = sp.edit();
+    	editor.putString(KEY_PLAYER1_NAME, value);
+    	editor.commit();
+    }
+
+    public static String getPlayer2(Context con){
+    	String value = PreferenceManager.getDefaultSharedPreferences(con)
+    						.getString(KEY_PLAYER2, con.getString(R.string.pref_player2_default));
+    	return value;
+    }
+    
+    public static void setPlayer2(Context con, String value){
+    	SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(con);
+    	Editor editor = sp.edit();
+    	editor.putString(KEY_PLAYER2, value);
+    	editor.commit();
+    }
+
+    public static String getPlayer2Name(Context con){
+    	String value = PreferenceManager.getDefaultSharedPreferences(con)
+    						.getString(KEY_PLAYER2_NAME, con.getString(R.string.pref_player2_name_default));
+    	return value;
+    }
+    
+    public static void setPlayer2Name(Context con, String value){
+    	SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(con);
+    	Editor editor = sp.edit();
+    	editor.putString(KEY_PLAYER2_NAME, value);
+    	editor.commit();
+    }
+
 	private void dispSummary(){
 		String s;
 		
 		if (getShowHints(getBaseContext())){
-			s = getString(R.string.pref_show_hints_on);
+			findPreference(KEY_SHOW_HINTS).setSummary(R.string.pref_show_hints_on);
 		} else {
-			s = getString(R.string.pref_show_hints_off);
+			findPreference(KEY_SHOW_HINTS).setSummary(R.string.pref_show_hints_off);
 		}
 		
-		findPreference(KEY_SHOW_HINTS).setSummary(s);
-    }
+		ListPreference listpref =(ListPreference)(findPreference(KEY_PLAYER1));
+		listpref.setSummary((String)listpref.getEntry());
+		
+		s = getPlayer1Name(getBaseContext());
+		findPreference(KEY_PLAYER1_NAME).setSummary(s);
+
+		listpref =(ListPreference)(findPreference(KEY_PLAYER2));
+		listpref.setSummary((String)listpref.getEntry());
+
+		s = getPlayer2Name(getBaseContext());
+		findPreference(KEY_PLAYER2_NAME).setSummary(s);
+	}
     
     @Override  
     protected void onResume() {  

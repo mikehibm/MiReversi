@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.mireversi.model.Board;
 import com.example.mireversi.model.Cell;
 import com.example.mireversi.model.ComputerPlayerNovice;
+import com.example.mireversi.model.HumanPlayer;
 import com.example.mireversi.model.IPlayerCallback;
 import com.example.mireversi.model.Player;
 import com.example.mireversi.model.Cell.E_STATUS;
@@ -89,11 +90,8 @@ public class ReversiView extends View implements IPlayerCallback {
 		mBoard = new Board();
 		mPaused = false;
 		
-		Player player1 = new ComputerPlayerNovice(E_STATUS.Black, "Black", mBoard);
-		Player player2 = new ComputerPlayerNovice(E_STATUS.White, "White", mBoard);
-		
-		mBoard.setPlayer1(player1);
-		mBoard.setPlayer2(player2);
+		mBoard.setPlayer1(Player.getPlayer1(getContext(), mBoard, E_STATUS.Black));
+		mBoard.setPlayer2(Player.getPlayer2(getContext(), mBoard, E_STATUS.Black));
 		
 		invalidate();
 		
@@ -336,6 +334,9 @@ public class ReversiView extends View implements IPlayerCallback {
 		mPaused = false;
 		if (!TextUtils.isEmpty(state)){
 			mBoard.loadFromStateString(state);
+
+			mBoard.setPlayer1(Player.getPlayer1(getContext(), mBoard, E_STATUS.Black));
+			mBoard.setPlayer2(Player.getPlayer2(getContext(), mBoard, E_STATUS.Black));
 		}
 
 		callPlayer();

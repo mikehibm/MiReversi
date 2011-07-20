@@ -14,7 +14,7 @@
     
     <PreferenceCategory    	
     	android:orderingFromXml="true" 
-    	android:title="@string/pref_cat_player"> 
+    	android:title="@string/pref_cat_player1"> 
     
     	<ListPreference
     		android:title="@string/pref_player1"
@@ -31,6 +31,12 @@
     		android:defaultValue="@string/pref_player1_name_default"
     		/>	
     	
+    </PreferenceCategory>
+    
+    <PreferenceCategory    	
+    	android:orderingFromXml="true" 
+    	android:title="@string/pref_cat_player2">
+    
     	<ListPreference
     		android:title="@string/pref_player2"
     		android:key="player2"
@@ -46,6 +52,6 @@
     		android:defaultValue="@string/pref_player2_name_default"
     		/>	
     	
-    </PreferenceCategory>
+    </PreferenceCategory> 
     
 </PreferenceScreen>

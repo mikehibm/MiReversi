@@ -1,5 +1,8 @@
 package com.example.mireversi.model;
 
+import android.content.Context;
+
+import com.example.mireversi.Pref;
 import com.example.mireversi.model.Cell.E_STATUS;
 
 public abstract class Player {
@@ -34,6 +37,34 @@ public abstract class Player {
 	
 	public abstract void startThinking(IPlayerCallback callback);
 	public abstract void stopThinking();
+	
+	private static final Player getPlayer(String name, Board board, E_STATUS turn, String value){
+		int int_value = Integer.valueOf(value);
+		Player player;
+		switch (int_value){
+		case 1: 
+			player = new ComputerPlayerNovice(turn, name, board);
+			break;
+		case 2:
+			player = new ComputerPlayerIntermediate(turn, name, board);
+			break;
+		default:
+			player = new HumanPlayer(turn, name,board);
+		}
+		return player;
+	}
+	
+	public static final Player getPlayer1(Context con, Board board, E_STATUS turn){
+		String name = Pref.getPlayer1Name(con);
+		String value = Pref.getPlayer1(con);
+		return getPlayer(name, board, turn, value);
+	}
+
+	public static final Player getPlayer2(Context con, Board board, E_STATUS turn){
+		String name = Pref.getPlayer2Name(con);
+		String value = Pref.getPlayer2(con);
+		return getPlayer(name, board, turn, value);
+	}
 }
 
 
