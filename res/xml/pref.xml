@@ -2,14 +2,50 @@
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android" android:orderingFromXml="true">
 
-    <PreferenceCategory android:orderingFromXml="true" 
-    	android:title="@string/pref_cat_general"> 
-    
-    	<CheckBoxPreference
-    		android:title="@string/pref_show_hints"
+    <PreferenceCategory 
+    	android:orderingFromXml="true" 
+    	android:title="@string/pref_cat_general">
+    	 
+    	<CheckBoxPreference 
+    		android:title="@string/pref_show_hints" 
     		android:key="show_hints" 
-    		android:defaultValue="@string/pref_show_hints_default"/>
+    		android:defaultValue="@string/pref_show_hints_default" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory    	
+    	android:orderingFromXml="true" 
+    	android:title="@string/pref_cat_player"> 
+    
+    	<ListPreference
+    		android:title="@string/pref_player1"
+    		android:key="player1"
+    		android:defaultValue="@string/pref_player1_default"
+    		android:dialogTitle="@string/pref_player1"
+    		android:entries="@array/entries_players"
+    		android:entryValues="@array/entryvalues_palyers"
+    		/>
+    	
+    	<EditTextPreference 
+    		android:title="@string/pref_player1_name"
+    		android:key="player1_name"
+    		android:defaultValue="@string/pref_player1_name_default"
+    		/>	
+    	
+    	<ListPreference
+    		android:title="@string/pref_player2"
+    		android:key="player2"
+    		android:defaultValue="@string/pref_player2_default"
+    		android:dialogTitle="@string/pref_player2"
+    		android:entries="@array/entries_players"
+    		android:entryValues="@array/entryvalues_palyers"
+    		/>
 
+    	<EditTextPreference 
+    		android:title="@string/pref_player2_name"
+    		android:key="player2_name"
+    		android:defaultValue="@string/pref_player2_name_default"
+    		/>	
+    	
     </PreferenceCategory>
     
 </PreferenceScreen>

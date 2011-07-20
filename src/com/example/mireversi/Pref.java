@@ -11,6 +11,10 @@ public class Pref  extends PreferenceActivity{
 	
 	private static final String KEY_SHOW_HINTS = "show_hints";
 	private static final String KEY_STATE = "status";
+	private static final String KEY_PLAYER1 = "player1";
+	private static final String KEY_PLAYER1_NAME = "player1_name";
+	private static final String KEY_PLAYER2 = "player2";
+	private static final String KEY_PLAYER2_NAME = "player2_name";
 	
 	private SharedPreferences mSharedPreferences = null;
 	
