@@ -46,8 +46,7 @@ public class ComputerPlayerNovice extends ComputerPlayer {
 			Random rnd = new Random();
 			int n = rnd.nextInt(available_cells.size());
 			Cell chosenCell = available_cells.get(n);
-			
-			pos = new Point(chosenCell.getX(), chosenCell.getY());
+			pos = chosenCell.getPoint();
 		}
 		
 		return pos;

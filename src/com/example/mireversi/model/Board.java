@@ -2,6 +2,8 @@ package com.example.mireversi.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import android.graphics.Point;
 import android.graphics.RectF;
 import android.text.TextUtils;
 import com.example.mireversi.Utils;
@@ -30,7 +32,7 @@ public class Board {
 	
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLS; j++) {
-				cells[i][j] = new Cell(this, j, i);
+				cells[i][j] = new Cell(this, new Point(i, j));
 			}
 		}
 

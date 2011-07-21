@@ -1,6 +1,8 @@
 package com.example.mireversi.model;
 
 import java.util.ArrayList;
+
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -12,19 +14,15 @@ public class Cell {
 		White
 	}
 	
-//	private static final String TAG = "Cell";
-
 	private Board mBoard;
 	private E_STATUS status = E_STATUS.None;
 	private RectF rect = new RectF();
-	private int x;
-	private int y;
+	private Point point = new Point();
 	ArrayList<Cell> mReversibleCells = new ArrayList<Cell>();
 	
-	public Cell(Board board, int x, int y){
+	public Cell(Board board, Point point){
 		this.mBoard = board;
-		this.x = x;
-		this.y = y;
+		this.point = point;
 	}
 	
 	
@@ -58,12 +56,8 @@ public class Cell {
 		return st;
 	}
 	
-	public int getX(){
-		return this.x;
-	}
-	
-	public int getY(){
-		return this.y;
+	public Point getPoint(){
+		return this.point;
 	}
 	
 	public void setRectF(RectF rect) {
@@ -185,8 +179,8 @@ public class Cell {
 	}
 	
 	private Cell getNextCell(int offx, int offy){
-		int px = this.x + offx;
-		int py = this.y + offy;
+		int px = this.point.x + offx;
+		int py = this.point.y + offy;
 		
 		if (px < 0 || px >= Board.COLS){
 			return null;
