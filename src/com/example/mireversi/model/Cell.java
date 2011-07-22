@@ -18,7 +18,13 @@ public class Cell {
 	private E_STATUS status = E_STATUS.None;
 	private RectF rect = new RectF();
 	private Point point = new Point();
+	
+	//このセルにコマを置くと裏返しの対象になるセルのリスト
 	ArrayList<Cell> mReversibleCells = new ArrayList<Cell>();
+	
+	//このセルにコマを置いた場合の局面の評価値
+	private int mEval;
+	
 	
 	public Cell(Board board, Point point){
 		this.mBoard = board;
@@ -58,6 +64,14 @@ public class Cell {
 	
 	public Point getPoint(){
 		return this.point;
+	}
+	
+	public int getRow(){
+		return this.point.y;
+	}
+	
+	public int getCol(){
+		return this.point.x;
 	}
 	
 	public void setRectF(RectF rect) {
@@ -115,6 +129,16 @@ public class Cell {
 		return status;
 	}
 	
+	public void setEval(int mEval) {
+		this.mEval = mEval;
+	}
+
+
+	public int getEval() {
+		return mEval;
+	}
+
+
 	public boolean isBlank(){
 		return (this.status == E_STATUS.None);
 	}
@@ -126,7 +150,7 @@ public class Cell {
 		return statusToString(this.status);
 	}
 	
-	public E_STATUS getOpponentStatus(E_STATUS turn){
+	public static E_STATUS getOpponentStatus(E_STATUS turn){
 		if (turn == E_STATUS.Black){
 			return E_STATUS.White;
 		} else if (turn == E_STATUS.White){

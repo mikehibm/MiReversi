@@ -32,7 +32,7 @@ public class Board {
 	
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLS; j++) {
-				cells[i][j] = new Cell(this, new Point(i, j));
+				cells[i][j] = new Cell(this, new Point(j, i));
 			}
 		}
 
@@ -171,6 +171,20 @@ public class Board {
 		return countCells(E_STATUS.None);
 	}
 	
+	//コマを置く事が出来るセルのリストを返す。
+	public ArrayList<Cell> getAvailableCells(){
+		ArrayList<Cell> available_cells = new ArrayList<Cell>();
+		for (int i = 0; i< Board.ROWS; i++ ){
+			for (int j =0; j < Board.COLS; j++){
+				cells[i][j].setEval(0);
+				if (cells[i][j].getReversibleCells().size() > 0){
+					available_cells.add(cells[i][j]);
+				}
+			}
+		}
+		return available_cells;
+	}
+	
 	public int getAvailableCellCount(boolean recalculate){
 		int n = 0;
 		for (int i = 0; i < ROWS; i++) {
@@ -247,6 +261,16 @@ public class Board {
 
 		ArrayList<Cell> changedCells = new ArrayList<Cell>();
 		setAllReversibleCells(changedCells);
+	}
+
+	/***
+	 * 盤面の新しいクローンを作成して返す。
+	 */
+	public Board clone(){
+		String s = this.getStateString();
+		Board newBoard = new Board();
+		newBoard.loadFromStateString(s);
+		return newBoard;
 	}
 
 	public void setPlayer1(Player player1) {
