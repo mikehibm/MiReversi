@@ -80,6 +80,10 @@ public class Board {
 		this.cells = cells;
 	}
 	
+	public Cell getCell(Point point){
+		return cells[point.y][point.x];
+	}
+	
 	public float getCellWidth(){
 		return this.rect.width() / (float)COLS;
 	}
@@ -88,13 +92,9 @@ public class Board {
 		return this.rect.height() / (float)ROWS;
 	}
 	
-	public ArrayList<Cell> changeCell(int r, int c, Cell.E_STATUS newStatus) throws Exception{
-		Cell cell = cells[r][c];
-		
+	public ArrayList<Cell> changeCell(Point point, Cell.E_STATUS newStatus) {
+		Cell cell = cells[point.y][point.x];
 		ArrayList<Cell> list = cell.getReversibleCells();
-		if (list.size() == 0){
-			throw new InvalidMoveException();
-		}
 
 		ArrayList<Cell> changedCells = new ArrayList<Cell>();
 
@@ -138,7 +138,7 @@ public class Board {
 				Cell cell = cells[i][j];
 				
 				//再計算の前に前回マークされていた部分を変更リストに追加。
-				if (cell.getReversibleCells().size() > 0){
+				if (cell.getReversibleCells().size() > 0 && changedCells != null){
 					changedCells.add(cell);
 				}
 				
@@ -146,7 +146,7 @@ public class Board {
 				cell.setReversibleCells(this.turn);
 
 				//再計算後に今回マークされた部分を変更リストに追加。
-				if (cell.getReversibleCells().size() > 0){
+				if (cell.getReversibleCells().size() > 0 && changedCells != null){
 					n++;
 					changedCells.add(cell);
 				}
@@ -259,18 +259,24 @@ public class Board {
 			}
 		}
 
-		ArrayList<Cell> changedCells = new ArrayList<Cell>();
-		setAllReversibleCells(changedCells);
+		setAllReversibleCells(null);
 	}
 
 	/***
 	 * 盤面の新しいクローンを作成して返す。
 	 */
 	public Board clone(){
-		String s = this.getStateString();
-		Board newBoard = new Board();
-		newBoard.loadFromStateString(s);
-		return newBoard;
+		Board new_board = new Board();
+		
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				new_board.cells[i][j].setStatus(this.cells[i][j].getStatus());
+			}
+		}
+		new_board.turn = this.turn;
+		setAllReversibleCells(null);
+
+		return new_board;
 	}
 
 	public void setPlayer1(Player player1) {

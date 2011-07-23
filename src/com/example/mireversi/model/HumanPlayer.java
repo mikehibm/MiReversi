@@ -17,7 +17,7 @@ public class HumanPlayer extends Player {
 
 	@Override
 	public void startThinking(IPlayerCallback callback) {
-		callback.onEndThinking(new Point(-1, -1));
+		callback.onEndThinking(null);
 	}
 
 	@Override

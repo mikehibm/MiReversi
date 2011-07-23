@@ -9,16 +9,16 @@ import android.graphics.Point;
 import com.example.mireversi.Utils;
 import com.example.mireversi.model.Cell.E_STATUS;
 
-public class ComputerPlayerNovice extends ComputerPlayer {
+public class ComputerPlayerLevel1 extends ComputerPlayer {
 
 
-	public ComputerPlayerNovice(E_STATUS turn, String name, Board board){
+	public ComputerPlayerLevel1(E_STATUS turn, String name, Board board){
 		super(turn, name, board);
 	}
 
 	@Override
 	protected Point think() {
-		Point pos = new Point(-1, -1);
+		Point pos = null;
 		
 		try {
 			Thread.sleep(200);

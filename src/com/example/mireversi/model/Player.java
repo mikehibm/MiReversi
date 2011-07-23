@@ -43,10 +43,13 @@ public abstract class Player {
 		Player player;
 		switch (int_value){
 		case 1: 
-			player = new ComputerPlayerNovice(turn, name, board);
+			player = new ComputerPlayerLevel1(turn, name, board);
 			break;
 		case 2:
-			player = new ComputerPlayerIntermediate(turn, name, board);
+			player = new ComputerPlayerLevel2(turn, name, board);
+			break;
+		case 3:
+			player = new ComputerPlayerLevel3(turn, name, board);
 			break;
 		default:
 			player = new HumanPlayer(turn, name,board);

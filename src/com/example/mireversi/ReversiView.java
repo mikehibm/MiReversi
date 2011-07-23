@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.example.mireversi.model.Board;
 import com.example.mireversi.model.Cell;
-import com.example.mireversi.model.ComputerPlayerNovice;
-import com.example.mireversi.model.HumanPlayer;
 import com.example.mireversi.model.IPlayerCallback;
 import com.example.mireversi.model.Player;
 import com.example.mireversi.model.Cell.E_STATUS;
@@ -121,10 +119,10 @@ public class ReversiView extends View implements IPlayerCallback {
 		case MotionEvent.ACTION_UP:
 			int r = (int)(y / mBoard.getCellHeidht());
 			int c = (int)(x / mBoard.getCellWidth());
-			if (r < Board.ROWS && c < Board.COLS){
+			if (r < Board.ROWS && c < Board.COLS && r >=0 && c >= 0){
 				Player p = mBoard.getCurrentPlayer();
 				if (p != null && p.isHuman()){
-					move(r, c);
+					move(new Point(c, r));
 				}
 			}
 			break;
@@ -134,32 +132,33 @@ public class ReversiView extends View implements IPlayerCallback {
 		return true;
 	}
 
-	private void move(int r, int c){
+	private void move(Point point){
 		List<Cell> changedCells = null;
 		
-		try {
-			changedCells = mBoard.changeCell(r, c, mBoard.getTurn());
-			
-			int nextAvailableCellCount = mBoard.changeTurn(changedCells); 
-			if (nextAvailableCellCount == 0){
-				if (mBoard.countBlankCells() == 0){				//全部のセルが埋まった場合は終了
-					finish();											
-				} else {
-					showSkippMessage();					//スキップ
-					nextAvailableCellCount = mBoard.changeTurn(changedCells);
-					if (nextAvailableCellCount == 0){	//どちらも打つ場所が無くなった場合は終了
-						finish();							
-					}
+		if (mBoard.getCell(point).getReversibleCells().size() == 0){
+			String s = String.format("Invalid move. (r,c=%d,%d)", point.y, point.x);
+			//Toast.makeText(this.getContext(), s, Toast.LENGTH_SHORT).show();
+			Utils.d(s);
+			return;
+		} 
+		
+		changedCells = mBoard.changeCell(point, mBoard.getTurn());
+		
+		int nextAvailableCellCount = mBoard.changeTurn(changedCells); 
+		if (nextAvailableCellCount == 0){
+			if (mBoard.countBlankCells() == 0){				//全部のセルが埋まった場合は終了
+				finish();											
+			} else {
+				showSkippMessage();					//スキップ
+				nextAvailableCellCount = mBoard.changeTurn(changedCells);
+				if (nextAvailableCellCount == 0){	//どちらも打つ場所が無くなった場合は終了
+					finish();							
 				}
 			}
-			
-			callPlayer();
-			
-		} catch (Exception e) {
-			//Toast.makeText(this.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-			Utils.d(e.getMessage());
 		}
-
+		
+		callPlayer();
+			
 		if (changedCells != null){
 			for (Cell cell : changedCells) {
 				invalidate(cell.getRect());			//変更された領域のみを再描画
@@ -169,10 +168,11 @@ public class ReversiView extends View implements IPlayerCallback {
 	
 	@Override
 	public void onEndThinking(Point pos) {
+		if (pos == null) return;
 		if (pos.y < 0 && pos.x < 0) return;
 		if (mPaused) return;
 		
-		move(pos.y, pos.x);
+		move(pos);
 	}
 	
 	private void finish(){

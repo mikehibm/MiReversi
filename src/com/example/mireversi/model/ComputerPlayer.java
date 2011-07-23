@@ -1,8 +1,6 @@
 package com.example.mireversi.model;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-
 import android.graphics.Point;
 import android.os.Handler;
 import com.example.mireversi.model.Cell.E_STATUS;
@@ -129,15 +127,31 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 		E_STATUS current_turn = board.getTurn();
 		E_STATUS opp_turn = Cell.getOpponentStatus(current_turn);
 		
+		int cur_count = 0, opp_count = 0, blank_count = 0;
+		
 		for (int i = 0; i< Board.ROWS; i++ ){
 			for (int j =0; j < Board.COLS; j++){
 				if (cells[i][j].getStatus() == current_turn){
+					cur_count++;
 					total += getWeight(cells[i][j]);
 				} else if (cells[i][j].getStatus() == opp_turn){
-					total -= getWeight(cells[i][j]);
+					opp_count++;
+					//total -= getWeight(cells[i][j]);
+				} else {
+					blank_count++;
 				}
 			}
 		}
+		
+		//終盤
+		if (blank_count < 10){
+			total += (cur_count - opp_count) * 2;
+		}
+		
+		if (opp_count == 0){
+			total = Integer.MAX_VALUE;
+		}
+		
 		return total;
 	}
 
