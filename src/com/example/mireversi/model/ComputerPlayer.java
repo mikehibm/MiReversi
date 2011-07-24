@@ -9,14 +9,14 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 	
 	//場所毎の評価値
 	protected static final int[][] weight 
-		= { { 30,-12,  0, -1, -1,  0,-12, 30 }, 
+		= { { 40,-12,  0, -1, -1,  0,-12, 40 }, 
 			{-12,-15, -3, -3, -3, -3,-15,-12 },
 			{  0, -3,  0, -1, -1,  0, -3,  0 },
 			{ -1, -3, -1, -1, -1, -1, -3, -1 },
 			{ -1, -3, -1, -1, -1, -1, -3, -1 },
 			{  0, -3,  0, -1, -1,  0, -3,  0 },
 			{-12,-15, -3, -3, -3, -3,-15,-12 },
-			{ 30,-12,  0, -1, -1,  0,-12, 30 }
+			{ 40,-12,  0, -1, -1,  0,-12, 40 }
 	   	};
 
 	private Handler mHandler = new Handler();
@@ -100,8 +100,9 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 			//0：等しい。1：より大きい。-1：より小さい
 			int weight1 = getWeight(cell1);
 			int weight2 = getWeight(cell2);
-			int n = Integer.signum(weight2 - weight1);		//降順にソートする。
-			return n;      
+			if (weight1 > weight2) return -1;
+			if (weight1 < weight2) return 1;
+			return 0;
 		}  
 	}
 	
@@ -116,37 +117,43 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 			//0：等しい。1：より大きい。-1：より小さい
 			int val1 = cell1.getEval();
 			int val2 = cell2.getEval();
-			int n = Integer.signum(val2 - val1);		//降順にソートする。
-			return n;      
+			if (val1 > val2) return -1;
+			if (val1 < val2) return 1;
+			if (val1 == val2){
+				if (cell1.getNextAvaiableCnt() > cell2.getNextAvaiableCnt()) return -1;
+				if (cell1.getNextAvaiableCnt() < cell2.getNextAvaiableCnt()) return 1;
+			}
+			return 0;
 		}  
 	}
 	
 	public int getWeightTotal(Board board){
 		int total = 0;
 		Cell[][] cells = board.getCells();
-		E_STATUS current_turn = board.getTurn();
-		E_STATUS opp_turn = Cell.getOpponentStatus(current_turn);
+		E_STATUS player_turn = mTurn;		
+		E_STATUS opp_turn = Cell.getOpponentStatus(player_turn);
 		
 		int cur_count = 0, opp_count = 0, blank_count = 0;
 		
 		for (int i = 0; i< Board.ROWS; i++ ){
 			for (int j =0; j < Board.COLS; j++){
-				if (cells[i][j].getStatus() == current_turn){
+				E_STATUS st = cells[i][j].getStatus();
+				if (st == player_turn){
 					cur_count++;
 					total += getWeight(cells[i][j]);
-				} else if (cells[i][j].getStatus() == opp_turn){
+				} else if (st == opp_turn){
 					opp_count++;
-					//total -= getWeight(cells[i][j]);
+					total -= getWeight(cells[i][j]);
 				} else {
 					blank_count++;
 				}
 			}
 		}
 		
-		//終盤
-		if (blank_count < 10){
-			total += (cur_count - opp_count) * 2;
-		}
+//		//終盤
+//		if (blank_count < 10){
+//			total += (cur_count - opp_count);
+//		}
 		
 		if (opp_count == 0){
 			total = Integer.MAX_VALUE;

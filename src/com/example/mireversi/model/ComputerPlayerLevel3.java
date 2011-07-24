@@ -8,6 +8,7 @@ import android.graphics.Point;
 
 import com.example.mireversi.Utils;
 import com.example.mireversi.model.Cell.E_STATUS;
+import com.example.mireversi.model.ComputerPlayer.EvaluationComparator;
 
 public class ComputerPlayerLevel3 extends ComputerPlayer{
 
@@ -19,23 +20,10 @@ public class ComputerPlayerLevel3 extends ComputerPlayer{
 	protected Point think() {
 		Point pos = null;
 		
-//		try {
-//			Thread.sleep(10);
-//		} catch (InterruptedException e) {
-//			setStopped(true);
-//		}
-//		if (isStopped()) return pos;					//中断フラグが立っていたら抜ける。
-		
 		//コマを置く事が出来るセルのリストを得る。
 		ArrayList<Cell> available_cells = mBoard.getAvailableCells();
-//DEBUG
-Utils.d("Available cells:\n");
-for (int i = 0; i < available_cells.size(); i++) {
-	Cell cur = available_cells.get(i);
-	Utils.d(String.format("%d x,y=%d,%d   weight=%d", i, cur.getCol(), cur.getRow(),  cur.getEval()));
-}
 
-		//可能な手が一つも無い場合はパス。
+		//可能な手が0個の場合はパス。
 		if (available_cells.size() == 0){
 			return null;
 		}
@@ -43,19 +31,29 @@ for (int i = 0; i < available_cells.size(); i++) {
 		if (available_cells.size() == 1){
 			return available_cells.get(0).getPoint();
 		}
+		//場所の重みの重いものから降順にソート。
+		Collections.sort(available_cells, new WeightComparator());
+//DEBUG
+Utils.d("Available cells:\n");
+for (int i = 0; i < available_cells.size(); i++) {
+	Cell cur = available_cells.get(i);
+	Utils.d(String.format("%d x,y=%d,%d   weight=%d", i, cur.getCol(), cur.getRow(),  cur.getEval()));
+}
+
 		if (isStopped()) return null;					//中断フラグが立っていたら抜ける。
 		
-		int blanks = mBoard.countBlankCells();
-		int depth = (60 - blanks) / 20;
-		if (available_cells.size() <= 3) depth += 1;
+		int depth = 0; //(60 - blanks) / 20;
 		
 		for (int i = 0; i < available_cells.size(); i++) {
 			Cell cur = available_cells.get(i);
-			//評価値をクリア
-			cur.setEval(0);		
 			
-			//depth手先まで打った後の局面の評価値のうち最も高い値を得る。
-			cur.setEval(getWeightByMiniMax(mBoard, cur.getPoint(), depth));
+			if (i < 5){
+				//depth手先まで打った後の局面の評価値のうち最も高い値を得る。
+				getWeightByMiniMax(mBoard, cur, depth, false);
+			} else {
+				cur.setEval(Integer.MIN_VALUE);
+				cur.setNextAvaiableCnt(0);
+			}
 
 			if (isStopped()) return null;					//中断フラグが立っていたら抜ける。
 		}
@@ -105,49 +103,60 @@ Utils.d(String.format("Chosen cell=%d: %d,%d   Eval=%d", n, chosenCell.getCol(),
 	}
 	
 
-	public int getWeightByMiniMax(Board prev_board, Point point, int depth){
+	public void getWeightByMiniMax(Board prev_board, Cell cur, int depth, boolean passed){
 		
-		if (isStopped()) return Integer.MIN_VALUE;					//中断フラグが立っていたら抜ける。
+		if (isStopped()) return;					//中断フラグが立っていたら抜ける。
 
 		//前の盤面をクローンして1手先用の盤面を作成。
 		Board new_board = prev_board.clone();
 		
-		if (point != null){
+		if (!passed){
 			//1手打って局面を進める。
-			new_board.changeCell(point, new_board.getTurn());
+			new_board.changeCell(cur.getPoint(), new_board.getTurn());
 		}
 
-		if (depth == 0){
-			int val = getWeightTotal(new_board); 
-			//相手の手番であればマイナスで評価。
-			if (new_board.getTurn() != mBoard.getTurn()) val *= -1;
-			return val;
-		}
-
-		new_board.changeTurn(null);
+		int next_available_cnt = new_board.changeTurn(null);
 		
+		if (depth == 0){
+			int val = getWeightTotal(new_board);
+			cur.setEval(val);
+			cur.setNextAvaiableCnt(next_available_cnt);
+			return;
+		}
+
+		if (next_available_cnt == 0){
+			getWeightByMiniMax(new_board, cur, depth-1, true);
+		}
+
 		//コマを置く事が出来るセルのリストを得る。
 		ArrayList<Cell> available_cells = new_board.getAvailableCells();
-		if (available_cells.size() == 0){
-			return getWeightByMiniMax(new_board, null, depth-1);
-		}
 
-		int max = Integer.MIN_VALUE, val;
+		//場所の重みの重いものから降順にソート。
+		Collections.sort(available_cells, new WeightComparator());
 
-//DEBUG
-Utils.d(String.format("Depth=%d: Turn=%s: Available cells:\n", depth, new_board.getTurnDisplay()));
+////DEBUG
+//Utils.d(String.format("Depth=%d: Turn=%s: Available cells:\n", depth, new_board.getTurnDisplay()));
 
-		for (int i = 0; i < available_cells.size(); i++) {
-			Cell cur = available_cells.get(i);
+		Cell max_cell = available_cells.get(0);
+		for (int i = 0; i < available_cells.size() && i < 7; i++) {
+			Cell cell = available_cells.get(i);
 
 			//depth手先の局面での最も高い評価値を得る。
-			val = getWeightByMiniMax(new_board, cur.getPoint(), depth-1);
-			if (val > max) max = val;
-
-Utils.d(String.format("%d x,y=%d,%d   Eval=%d", i, cur.getCol(), cur.getRow(),  val));
+			getWeightByMiniMax(new_board, cell, depth-1, false);
+			
+			if (cell.getEval() > max_cell.getEval()) { 
+				max_cell = cell; 
+			} else if (cell.getEval() == max_cell.getEval()) {
+				if (cell.getNextAvaiableCnt() > max_cell.getNextAvaiableCnt() && mTurn == new_board.getTurn()){
+					max_cell = cell; 
+				} else if (cell.getNextAvaiableCnt() < max_cell.getNextAvaiableCnt() && mTurn == new_board.getTurn()){
+					max_cell = cell; 
+				}
+			}
 		}
 
-		return max;
+		cur.setEval(max_cell.getEval());
+		cur.setNextAvaiableCnt(max_cell.getNextAvaiableCnt());
 	}
 
 }

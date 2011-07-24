@@ -25,6 +25,9 @@ public class Cell {
 	//このセルにコマを置いた場合の局面の評価値
 	private int mEval;
 	
+	//このセルにコマを置いた場合の次の手数
+	private int mNextAvaiableCnt;
+	
 	
 	public Cell(Board board, Point point){
 		this.mBoard = board;
@@ -132,10 +135,15 @@ public class Cell {
 	public void setEval(int mEval) {
 		this.mEval = mEval;
 	}
-
-
 	public int getEval() {
 		return mEval;
+	}
+
+	public void setNextAvaiableCnt(int mNextAvaiableCnt) {
+		this.mNextAvaiableCnt = mNextAvaiableCnt;
+	}
+	public int getNextAvaiableCnt() {
+		return mNextAvaiableCnt;
 	}
 
 

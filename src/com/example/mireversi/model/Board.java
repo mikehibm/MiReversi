@@ -138,7 +138,7 @@ public class Board {
 				Cell cell = cells[i][j];
 				
 				//再計算の前に前回マークされていた部分を変更リストに追加。
-				if (cell.getReversibleCells().size() > 0 && changedCells != null){
+				if (changedCells != null && cell.getReversibleCells().size() > 0){
 					changedCells.add(cell);
 				}
 				
@@ -146,9 +146,11 @@ public class Board {
 				cell.setReversibleCells(this.turn);
 
 				//再計算後に今回マークされた部分を変更リストに追加。
-				if (cell.getReversibleCells().size() > 0 && changedCells != null){
+				if (cell.getReversibleCells().size() > 0){
 					n++;
-					changedCells.add(cell);
+					if (changedCells != null){
+						changedCells.add(cell);	
+					}
 				}
 			}
 		}
@@ -274,7 +276,7 @@ public class Board {
 			}
 		}
 		new_board.turn = this.turn;
-		setAllReversibleCells(null);
+		new_board.setAllReversibleCells(null);
 
 		return new_board;
 	}
