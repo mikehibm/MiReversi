@@ -89,7 +89,7 @@ public class ReversiView extends View implements IPlayerCallback {
 		mPaused = false;
 		
 		mBoard.setPlayer1(Player.getPlayer1(getContext(), mBoard, E_STATUS.Black));
-		mBoard.setPlayer2(Player.getPlayer2(getContext(), mBoard, E_STATUS.Black));
+		mBoard.setPlayer2(Player.getPlayer2(getContext(), mBoard, E_STATUS.White));
 		
 		invalidate();
 		

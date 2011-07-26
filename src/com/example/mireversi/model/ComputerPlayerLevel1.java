@@ -11,6 +11,17 @@ import com.example.mireversi.model.Cell.E_STATUS;
 
 public class ComputerPlayerLevel1 extends ComputerPlayer {
 
+	//場所毎の重み付け
+	protected static final int[][] weight_table 
+		= { { 40,-12,  0, -1, -1,  0,-12, 40 }, 
+			{-12,-15, -3, -3, -3, -3,-15,-12 },
+			{  0, -3,  0, -1, -1,  0, -3,  0 },
+			{ -1, -3, -1, -1, -1, -1, -3, -1 },
+			{ -1, -3, -1, -1, -1, -1, -3, -1 },
+			{  0, -3,  0, -1, -1,  0, -3,  0 },
+			{-12,-15, -3, -3, -3, -3,-15,-12 },
+			{ 40,-12,  0, -1, -1,  0,-12, 40 }
+	   	};
 
 	public ComputerPlayerLevel1(E_STATUS turn, String name, Board board){
 		super(turn, name, board);
@@ -21,7 +32,7 @@ public class ComputerPlayerLevel1 extends ComputerPlayer {
 		Point pos = null;
 		
 		try {
-			Thread.sleep(200);
+			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			setStopped(true);
 		}
@@ -34,18 +45,18 @@ public class ComputerPlayerLevel1 extends ComputerPlayer {
 		}
 		
 		//評価値の高いものから降順にソート。
-		Collections.sort(available_cells, new WeightComparator());
+		Collections.sort(available_cells, new WeightComparator(weight_table));
 
 //DEBUG
 Utils.d("Available cells:\n");
 for (int i = 0; i < available_cells.size(); i++) {
 	Cell cur = available_cells.get(i);
-	Utils.d(String.format("%d x,y=%d,%d   weight=%d", i, cur.getPoint().x, cur.getPoint().y,  getWeight(cur)));
+	Utils.d(String.format("%d x,y=%d,%d   weight=%d", i, cur.getPoint().x, cur.getPoint().y,  getWeight(cur, weight_table)));
 }
 
 		if (isStopped()) return pos;					//中断フラグが立っていたら抜ける。
 		
-		int max_weight = getWeight(available_cells.get(0));
+		int max_weight = getWeight(available_cells.get(0), weight_table);
 		
 		ArrayList<Cell> max_cells = new ArrayList<Cell>();
 		max_cells.add(available_cells.get(0));		//ソート後先頭に来たものを最終候補リストに追加。
@@ -53,7 +64,7 @@ for (int i = 0; i < available_cells.size(); i++) {
 		//２番目以降の位置にあるもので先頭と同じ評価値を持つものを最終候補リストに追加。
 		for (int i = 1; i < available_cells.size(); i++) {
 			Cell current = available_cells.get(i);
-			if (max_weight == getWeight(current)){
+			if (max_weight == getWeight(current, weight_table)){
 				max_cells.add(current);
 			} else {
 				break; 
@@ -64,7 +75,7 @@ for (int i = 0; i < available_cells.size(); i++) {
 Utils.d("Max cells:\n");
 for (int i = 0; i < max_cells.size(); i++) {
 	Cell cur = max_cells.get(i);
-	Utils.d(String.format("%d x,y=%d,%d   weight=%d", i, cur.getPoint().x, cur.getPoint().y,  getWeight(cur)));
+	Utils.d(String.format("%d x,y=%d,%d   weight=%d", i, cur.getPoint().x, cur.getPoint().y,  getWeight(cur, weight_table)));
 }
 
 		//最終候補が複数ある場合はそのなかからランダムに選ぶ。

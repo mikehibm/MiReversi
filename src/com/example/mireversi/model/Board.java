@@ -306,4 +306,22 @@ public class Board {
 		}
 		return p;
 	}
+
+	public void write(String header, String footer){
+		Utils.d(header);
+		for (int i = 0; i < ROWS; i++) {
+			Utils.d(String.format("%s %s %s %s %s %s %s %s", 
+					cells[i][0].getStatus().toString().substring(0, 1),
+					cells[i][1].getStatus().toString().substring(0, 1),
+					cells[i][2].getStatus().toString().substring(0, 1),
+					cells[i][3].getStatus().toString().substring(0, 1),
+					cells[i][4].getStatus().toString().substring(0, 1),
+					cells[i][5].getStatus().toString().substring(0, 1),
+					cells[i][6].getStatus().toString().substring(0, 1),
+					cells[i][7].getStatus().toString().substring(0, 1)
+					));
+		}
+		Utils.d(footer);
+	}
+
 }

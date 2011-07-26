@@ -214,10 +214,7 @@ public class Cell {
 		int px = this.point.x + offx;
 		int py = this.point.y + offy;
 		
-		if (px < 0 || px >= Board.COLS){
-			return null;
-		}
-		if (py < 0 || py >= Board.ROWS){
+		if (px < 0 || px >= Board.COLS || py < 0 || py >= Board.ROWS){
 			return null;
 		}
 		

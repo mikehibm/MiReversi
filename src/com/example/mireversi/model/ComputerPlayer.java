@@ -7,18 +7,6 @@ import com.example.mireversi.model.Cell.E_STATUS;
 
 public abstract class ComputerPlayer extends Player implements Runnable {
 	
-	//場所毎の評価値
-	protected static final int[][] weight 
-		= { { 40,-12,  0, -1, -1,  0,-12, 40 }, 
-			{-12,-15, -3, -3, -3, -3,-15,-12 },
-			{  0, -3,  0, -1, -1,  0, -3,  0 },
-			{ -1, -3, -1, -1, -1, -1, -3, -1 },
-			{ -1, -3, -1, -1, -1, -1, -3, -1 },
-			{  0, -3,  0, -1, -1,  0, -3,  0 },
-			{-12,-15, -3, -3, -3, -3,-15,-12 },
-			{ 40,-12,  0, -1, -1,  0,-12, 40 }
-	   	};
-
 	private Handler mHandler = new Handler();
 	private IPlayerCallback mCallback;
 	private Thread mThread;
@@ -83,9 +71,9 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 	}
 
 	
-	public int getWeight(Cell cell){
+	public int getWeight(Cell cell, int[][] weight_table){
 		Point pt = cell.getPoint();
-		return weight[pt.y][pt.x];
+		return weight_table[pt.y][pt.x];
 	}
 
 
@@ -95,11 +83,18 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 	 *
 	 */
 	public class WeightComparator implements Comparator<Cell> {  
+		
+		private int[][] mWeightTable;
+		
+		public WeightComparator(int[][] weight_table){
+			mWeightTable = weight_table;
+		}
+		
 		@Override
 		public int compare(Cell cell1, Cell cell2) {
 			//0：等しい。1：より大きい。-1：より小さい
-			int weight1 = getWeight(cell1);
-			int weight2 = getWeight(cell2);
+			int weight1 = getWeight(cell1, mWeightTable);
+			int weight2 = getWeight(cell2, mWeightTable);
 			if (weight1 > weight2) return -1;
 			if (weight1 < weight2) return 1;
 			return 0;
@@ -127,10 +122,10 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 		}  
 	}
 	
-	public int getWeightTotal(Board board){
+	public int getWeightTotal(Board board, int [][] weight_table){
 		int total = 0;
 		Cell[][] cells = board.getCells();
-		E_STATUS player_turn = mTurn;		
+		E_STATUS player_turn = board.getTurn();		
 		E_STATUS opp_turn = Cell.getOpponentStatus(player_turn);
 		
 		int cur_count = 0, opp_count = 0, blank_count = 0;
@@ -140,24 +135,19 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 				E_STATUS st = cells[i][j].getStatus();
 				if (st == player_turn){
 					cur_count++;
-					total += getWeight(cells[i][j]);
+					total += getWeight(cells[i][j], weight_table);
 				} else if (st == opp_turn){
 					opp_count++;
-					total -= getWeight(cells[i][j]);
+					total -= getWeight(cells[i][j], weight_table);
 				} else {
 					blank_count++;
 				}
 			}
 		}
 		
-//		//終盤
-//		if (blank_count < 10){
-//			total += (cur_count - opp_count);
+//		if (opp_count == 0){
+//			total = Integer.MAX_VALUE;
 //		}
-		
-		if (opp_count == 0){
-			total = Integer.MAX_VALUE;
-		}
 		
 		return total;
 	}
