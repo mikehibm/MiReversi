@@ -162,19 +162,27 @@ for (int i = 0; i < max_cells.size(); i++) {
 		addWeightForStableCells(board, new_tbl, new Point(0, 0), 1, 1, 2);
 
 		//右上からの確定石の重みを重くする。
-		addWeightForStableCells(board, new_tbl, new Point(Board.COLS-1, 0), -1, 0, -1);
-		addWeightForStableCells(board, new_tbl, new Point(Board.COLS-1, 0), 0, 1, -1);
+		addWeightForStableCells(board, new_tbl, new Point(Board.COLS-1, 0), -1, 0, 7);
+		addWeightForStableCells(board, new_tbl, new Point(Board.COLS-1, 0), 0, 1, 7);
 		addWeightForStableCells(board, new_tbl, new Point(Board.COLS-1, 0), -1, 1, 2);
 
 		//左下からの確定石の重みを重くする。
-		addWeightForStableCells(board, new_tbl, new Point(0, Board.ROWS-1), 1, 0, -1);
-		addWeightForStableCells(board, new_tbl, new Point(0, Board.ROWS-1), 0, -1, -1);
+		addWeightForStableCells(board, new_tbl, new Point(0, Board.ROWS-1), 1, 0, 7);
+		addWeightForStableCells(board, new_tbl, new Point(0, Board.ROWS-1), 0, -1, 7);
 		addWeightForStableCells(board, new_tbl, new Point(0, Board.ROWS-1), 1, -1, 2);
 
 		//右下からの確定石の重みを重くする。
-		addWeightForStableCells(board, new_tbl, new Point(Board.COLS-1, Board.ROWS-1), -1, 0, -1);
-		addWeightForStableCells(board, new_tbl, new Point(Board.COLS-1, Board.ROWS-1), 0, -1, -1);
+		addWeightForStableCells(board, new_tbl, new Point(Board.COLS-1, Board.ROWS-1), -1, 0, 7);
+		addWeightForStableCells(board, new_tbl, new Point(Board.COLS-1, Board.ROWS-1), 0, -1, 7);
 		addWeightForStableCells(board, new_tbl, new Point(Board.COLS-1, Board.ROWS-1), -1, -1, 2);
+		
+Utils.d(String.format("--- Weight Table Turn=%s:", board.getTurnDisplay()));		
+for (int i =0; i < Board.ROWS; i++){
+	Utils.d(String.format("%3d %3d %3d %3d %3d %3d %3d %3d ",
+			new_tbl[i][0], new_tbl[i][1], new_tbl[i][2], new_tbl[i][3],
+			new_tbl[i][4], new_tbl[i][5], new_tbl[i][6], new_tbl[i][7]));
+}
+Utils.d("--- Weight Table end");		
 
 		return new_tbl;
 	}
@@ -191,7 +199,7 @@ for (int i = 0; i < max_cells.size(); i++) {
 			|| limit == 0){
 			return;
 		} else {
-			tbl[point.y][point.x] = Math.abs(tbl[point.y][point.x]) * 2;
+			tbl[point.y][point.x] = (Math.abs(tbl[point.y][point.x]) + 5) * 2;
 			addWeightForStableCells(board, tbl, point, dx, dy, limit);
 		}
 	}
