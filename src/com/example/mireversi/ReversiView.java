@@ -175,6 +175,23 @@ public class ReversiView extends View implements IPlayerCallback {
 		move(pos);
 	}
 	
+	@Override
+	public void onProgress() {
+		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
+	}
+	
+	@Override
+	public void onPointStarted(Point pos) {
+		Cell cell = mBoard.getCell(pos);
+		invalidate(cell.getRect());			//変更された領域のみを再描画
+	}
+	
+	@Override
+	public void onPointEnded(Point pos) {
+		Cell cell = mBoard.getCell(pos);
+		invalidate(cell.getRect());			//変更された領域のみを再描画
+	}
+	
 	private void finish(){
 		mBoard.setFinished();
 		showCountsToast();
@@ -301,16 +318,24 @@ public class ReversiView extends View implements IPlayerCallback {
 		canvas.drawCircle(turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellFgB);
 		String s = String.valueOf(mBoard.countCells(E_STATUS.Black));
 		canvas.drawText(s, turn_text_x, top + turn_text_y, mPaintTextFg);					//黒のコマ数
-		canvas.drawText(mBoard.getPlayer1().getName(), turn_circle_x, top + turn_text_y*2, mPaintTextFg);					//黒のコマ数
+		canvas.drawText(mBoard.getPlayer1().getName(), turn_circle_x, top + turn_text_y*1.8f, mPaintTextFg);			//黒の名前
 
 		canvas.drawCircle(center + turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellFgB);
 		canvas.drawCircle(center + turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR * 0.94f, mPaintCellFgW);
 		s = String.valueOf(mBoard.countCells(E_STATUS.White));
 		canvas.drawText(s, center + turn_text_x, top + turn_text_y, mPaintTextFg);		//白のコマ数
-		canvas.drawText(mBoard.getPlayer2().getName(), center + turn_circle_x, top + turn_text_y*2, mPaintTextFg);					//黒のコマ数
+		canvas.drawText(mBoard.getPlayer2().getName(), center + turn_circle_x, top + turn_text_y*1.8f, mPaintTextFg);  //白の名前					
 
+		
+		//コンピュータの思考中の場合はパーセンテージを表示。
+		if (!mBoard.getCurrentPlayer().isHuman()){
+			s = String.valueOf(mBoard.getCurrentPlayer().getProgress()) + "%"; 
+			canvas.drawText(s, rect.left + turn_circle_x, top + turn_text_y*2.5f, mPaintTextFg);					
+		}
+		
 		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
 	}
+	
 	
 	public String getState(){
 		String s = mBoard.getStateString();

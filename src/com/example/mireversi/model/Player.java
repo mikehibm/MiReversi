@@ -1,6 +1,7 @@
 package com.example.mireversi.model;
 
 import android.content.Context;
+import android.graphics.Point;
 
 import com.example.mireversi.Pref;
 import com.example.mireversi.model.Cell.E_STATUS;
@@ -10,6 +11,10 @@ public abstract class Player {
 	protected E_STATUS mTurn;
 	protected String mName;
 	protected Board mBoard;
+
+	private int mProgress;
+	private Cell mCurrentCell;
+	
 	
 	public Player(E_STATUS turn, String name, Board board){
 		setTurn(turn);
@@ -42,6 +47,9 @@ public abstract class Player {
 		int int_value = Integer.valueOf(value);
 		Player player;
 		switch (int_value){
+		case 0: 
+			player = new ComputerPlayerLevel0(turn, name, board);
+			break;
 		case 1: 
 			player = new ComputerPlayerLevel1(turn, name, board);
 			break;
@@ -68,6 +76,23 @@ public abstract class Player {
 		String value = Pref.getPlayer2(con);
 		return getPlayer(name, board, turn, value);
 	}
+
+	public void setProgress(int mProgress) {
+		this.mProgress = mProgress;
+	}
+
+	public int getProgress() {
+		return mProgress;
+	}
+
+	public void setCurrentCell(Cell mCurrentCell) {
+		this.mCurrentCell = mCurrentCell;
+	}
+
+	public Cell getCurrentCell() {
+		return mCurrentCell;
+	}
+
 }
 
 

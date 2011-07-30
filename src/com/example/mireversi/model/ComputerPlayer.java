@@ -28,7 +28,7 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 		mStopped = false;
 		
 		if (mBoard.getAvailableCellCount(true) == 0){
-			callback.onEndThinking(new Point(-1, -1));
+			callback.onEndThinking(null);
 			return;
 		}
 		
@@ -40,10 +40,6 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 	@Override
 	public synchronized void stopThinking() {
 		mStopped = true;
-
-//		if (mThread != null && mThread.isAlive()){
-//			mThread.interrupt();
-//		}
 	}
 
 	@Override
@@ -70,6 +66,16 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 		return mStopped;
 	}
 
+	protected void onProgress(final int percent){
+		this.setProgress(percent);
+		
+		mHandler.post(new Runnable(){
+			@Override
+			public void run(){
+				mCallback.onProgress();
+			}
+		});
+	}
 	
 	public int getWeight(Cell cell, int[][] weight_table){
 		Point pt = cell.getPoint();
@@ -144,10 +150,6 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 				}
 			}
 		}
-		
-//		if (opp_count == 0){
-//			total = Integer.MAX_VALUE;
-//		}
 		
 		return total;
 	}
