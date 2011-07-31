@@ -7,7 +7,6 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.text.TextUtils;
 import com.example.mireversi.Utils;
-import com.example.mireversi.exceptions.*;
 import com.example.mireversi.model.Cell.E_STATUS;
 
 /**
@@ -273,10 +272,11 @@ public class Board {
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLS; j++) {
 				new_board.cells[i][j].setStatus(this.cells[i][j].getStatus());
+				new_board.cells[i][j].copyReversibleCells(this.cells[i][j].getReversibleCells());
 			}
 		}
 		new_board.turn = this.turn;
-		new_board.setAllReversibleCells(null);
+//		new_board.setAllReversibleCells(null);
 
 		return new_board;
 	}

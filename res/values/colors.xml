@@ -8,6 +8,7 @@
 	<color name="cell_fg_black">#000000</color>    
 	<color name="cell_fg_white">#FFFFFF</color>    
 	<color name="cell_bg_available">#FFCCCC</color>    
+	<color name="cell_fg_current">#FF0000</color>    
 
 	<color name="text_fg">#404040</color>    
 	<color name="turn_rect">#FFFFFF</color>    

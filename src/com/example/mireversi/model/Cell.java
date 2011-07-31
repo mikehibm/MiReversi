@@ -172,6 +172,16 @@ public class Cell {
 		return mReversibleCells;
 	}
 	
+	public void copyReversibleCells(ArrayList<Cell> cells){
+		mReversibleCells.clear();
+		Cell src, dest;
+		for (int i = 0; i < cells.size(); i++){
+			src = cells.get(i);
+			dest = mBoard.getCell(src.getPoint());
+			mReversibleCells.add(dest);
+		}
+	}
+	
 	public void setReversibleCells(E_STATUS current){
 		mReversibleCells.clear();
 		

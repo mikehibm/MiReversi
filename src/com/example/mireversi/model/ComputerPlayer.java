@@ -82,6 +82,10 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 		return weight_table[pt.y][pt.x];
 	}
 
+	public int getWeight(Point pt, int[][] weight_table){
+		return weight_table[pt.y][pt.x];
+	}
+
 
 	/***
 	 * セルの位置の評価値で降順にソートする為のComparatorクラス。

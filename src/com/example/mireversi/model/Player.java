@@ -47,9 +47,9 @@ public abstract class Player {
 		int int_value = Integer.valueOf(value);
 		Player player;
 		switch (int_value){
-		case 0: 
-			player = new ComputerPlayerLevel0(turn, name, board);
-			break;
+//		case 0: 
+//			player = new ComputerPlayerLevel0(turn, name, board);
+//			break;
 		case 1: 
 			player = new ComputerPlayerLevel1(turn, name, board);
 			break;

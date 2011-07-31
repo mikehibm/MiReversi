@@ -26,17 +26,17 @@ public class ComputerPlayerLevel3 extends ComputerPlayer{
 			{ 60,-15,  0, -1, -1,  0,-15, 60 }
 	   	};
 
-	//場所毎の重み付け(中盤)
-	protected static final int[][] weight_table2
-		= { { 80,  2, 12,  9,  9, 12,  2, 80 }, 
-			{  2,  0, 10,  2,  2, 10,  0,  2 },
-			{ 12, 10,  5,  3,  3,  5, 10, 12 },
-			{  9,  2,  3,  3,  3,  3,  2,  9 },
-			{  9,  2,  3,  3,  3,  3,  2,  9 },
-			{ 12, 10,  5,  3,  3,  5, 10, 12 },
-			{  2,  0, 10,  2,  2, 10,  0,  2 },
-			{ 80,  2, 12,  9,  9, 12,  2, 80 }
-	   	};
+//	//場所毎の重み付け(中盤)
+//	protected static final int[][] weight_table2
+//		= { { 80,  2, 12,  9,  9, 12,  2, 80 }, 
+//			{  2,  0, 10,  2,  2, 10,  0,  2 },
+//			{ 12, 10,  5,  3,  3,  5, 10, 12 },
+//			{  9,  2,  3,  3,  3,  3,  2,  9 },
+//			{  9,  2,  3,  3,  3,  3,  2,  9 },
+//			{ 12, 10,  5,  3,  3,  5, 10, 12 },
+//			{  2,  0, 10,  2,  2, 10,  0,  2 },
+//			{ 80,  2, 12,  9,  9, 12,  2, 80 }
+//	   	};
 
 	//場所毎の重み付け(終盤)
 	protected static final int[][] weight_table3 
@@ -79,15 +79,16 @@ public class ComputerPlayerLevel3 extends ComputerPlayer{
 //}
  
 		int blanks = mBoard.countBlankCells();
-		int depth = 2;
-//		if (blanks <= 30) depth = 1;
-//		if (blanks <= 20) depth = 2;
+		int depth = 1;						//2手先まで読む
+		if (blanks <= 20) depth = 2;		//3手先まで読む
+		if (blanks <= 10) depth = 3;		//5手先まで読む
 		int available_size = available_cells.size();
 		
 		for (int i = 0; i < available_size; i++) {
 			Cell cur = available_cells.get(i);
 			
-			super.onProgress(i * 100 / available_size);
+			this.setCurrentCell(cur);
+			super.onProgress(i * 100 / available_size);					//進捗を画面に表示
 			
 			//depth手先まで打った後の局面の評価値のうち最も高い値を得る。
 			getWeightByMiniMax(mBoard, cur, depth, false);
@@ -144,11 +145,7 @@ Utils.d(String.format("Chosen cell=%d: %d,%d   Eval=%d", n, chosenCell.getCol(),
 		int[][] src_tbl;
 		
 		src_tbl = weight_table1;
-		if (blank_cells >= 15) {
-			src_tbl = weight_table1;
-//		} else if (blank_cells >= 20){
-//			src_tbl = weight_table2;
-		} else {
+		if (blank_cells <= 10) {
 			src_tbl = weight_table3;
 		}
 
@@ -190,22 +187,23 @@ Utils.d(String.format("Chosen cell=%d: %d,%d   Eval=%d", n, chosenCell.getCol(),
 		return new_tbl;
 	}
 	
-	private void addWeightForStableCells(Board board, int[][] tbl, Point point, int dx,int dy, int limit){
-		Cell[][] cells = board.getCells();
-		if (cells[point.y][point.x].getStatus() != board.getTurn()) return;
-
-		point.offset(dx, dy);
-		if (limit > 0) limit--;
-
-		if (point.x < 0 || point.y < 0 
-			|| point.x >= Board.COLS || point.y >= Board.ROWS 
-			|| limit == 0){
-			return;
-		} else {
-			tbl[point.y][point.x] = (Math.abs(tbl[point.y][point.x]) + 5) * 2;
-			addWeightForStableCells(board, tbl, point, dx, dy, limit);
-		}
-	}
+//	private void addWeightForStableCells(Board board, int[][] tbl, Point point, int dx,int dy, int limit){
+//		Cell[][] cells = board.getCells();
+//		if (cells[point.y][point.x].getStatus() != board.getTurn()) return;
+//		int wt = getWeight(point, tbl);
+//
+//		point.offset(dx, dy);
+//		if (limit > 0) limit--;
+//
+//		if (point.x < 0 || point.y < 0 
+//			|| point.x >= Board.COLS || point.y >= Board.ROWS 
+//			|| limit == 0){
+//			return;
+//		} else {
+//			tbl[point.y][point.x] = wt;
+//			addWeightForStableCells(board, tbl, point, dx, dy, limit);
+//		}
+//	}
 	
 	public void getWeightByMiniMax(Board prev_board, Cell cur, int depth, boolean passed){
 		

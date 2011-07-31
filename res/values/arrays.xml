@@ -2,14 +2,12 @@
 <resources>
     <string-array name="entries_players">
         <item>Human</item>
-        <item>Computer Level 0</item>
         <item>Computer Level 1</item>
         <item>Computer Level 2</item>
         <item>Computer Level 3</item>
     </string-array>
     <string-array name="entryvalues_palyers">
         <item>-1</item>
-        <item>0</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>

@@ -35,6 +35,7 @@ public class ReversiView extends View implements IPlayerCallback {
 	private Paint mPaintCellAvW = new Paint();
 	private Paint mPaintTextFg = new Paint();
 	private Paint mPaintTurnRect = new Paint();
+	private Paint mPaintCellCur = new Paint();
 	
 	private int mWidth;
 	private int mHeight;
@@ -54,6 +55,7 @@ public class ReversiView extends View implements IPlayerCallback {
 		mPaintCellFgW.setColor(getResources().getColor(R.color.cell_fg_white));
 		mPaintCellAvB.setColor(getResources().getColor(R.color.cell_fg_black));
 		mPaintCellAvW.setColor(getResources().getColor(R.color.cell_fg_white));
+		mPaintCellCur.setColor(getResources().getColor(R.color.cell_fg_current));
 		mPaintTextFg.setColor(getResources().getColor(R.color.text_fg));
 		mPaintTurnRect.setColor(getResources().getColor(R.color.turn_rect));
 
@@ -62,9 +64,11 @@ public class ReversiView extends View implements IPlayerCallback {
 		mPaintCellFgW.setAntiAlias(true);
 		mPaintCellAvB.setAntiAlias(true);
 		mPaintCellAvW.setAntiAlias(true);
+		mPaintCellCur.setAntiAlias(true);
 
 		mPaintCellAvB.setAlpha(32);
 		mPaintCellAvW.setAlpha(64);
+		mPaintCellCur.setAlpha(128);
 		
 		mPaintTextFg.setAntiAlias(true);
 		mPaintTextFg.setStyle(Style.FILL);
@@ -169,7 +173,7 @@ public class ReversiView extends View implements IPlayerCallback {
 	@Override
 	public void onEndThinking(Point pos) {
 		if (pos == null) return;
-		if (pos.y < 0 && pos.x < 0) return;
+		if (pos.y < 0 || pos.x < 0) return;
 		if (mPaused) return;
 		
 		move(pos);
@@ -328,9 +332,16 @@ public class ReversiView extends View implements IPlayerCallback {
 
 		
 		//コンピュータの思考中の場合はパーセンテージを表示。
-		if (!mBoard.getCurrentPlayer().isHuman()){
+		Player p = mBoard.getCurrentPlayer();
+		if (p != null && !p.isHuman()){
 			s = String.valueOf(mBoard.getCurrentPlayer().getProgress()) + "%"; 
-			canvas.drawText(s, rect.left + turn_circle_x, top + turn_text_y*2.5f, mPaintTextFg);					
+			canvas.drawText(s, rect.left + turn_circle_x, top + turn_text_y*2.5f, mPaintTextFg);	
+			
+			Cell cell = p.getCurrentCell();
+			if (cell != null){
+				canvas.drawCircle(cell.getCx(), cell.getCy(),  mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellCur);
+				invalidate(cell.getRect());
+			}
 		}
 		
 		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
