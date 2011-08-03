@@ -3,10 +3,7 @@ package com.example.mireversi.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-
 import android.graphics.Point;
-
-import com.example.mireversi.Utils;
 import com.example.mireversi.model.Cell.E_STATUS;
 
 public class ComputerPlayerLevel2 extends ComputerPlayer{

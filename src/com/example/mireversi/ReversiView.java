@@ -331,11 +331,11 @@ public class ReversiView extends View implements IPlayerCallback {
 		canvas.drawText(mBoard.getPlayer2().getName(), center + turn_circle_x, top + turn_text_y*1.8f, mPaintTextFg);  //白の名前					
 
 		
-		//コンピュータの思考中の場合はパーセンテージを表示。
+		//コンピュータの思考中の場合は進捗状況を表示。
 		Player p = mBoard.getCurrentPlayer();
 		if (p != null && !p.isHuman()){
-			s = String.valueOf(mBoard.getCurrentPlayer().getProgress()) + "%"; 
-			canvas.drawText(s, rect.left + turn_circle_x, top + turn_text_y*2.5f, mPaintTextFg);	
+//			s = String.valueOf(mBoard.getCurrentPlayer().getProgress()) + "%"; 
+//			canvas.drawText(s, rect.left + turn_circle_x, top + turn_text_y*2.5f, mPaintTextFg);	
 			
 			Cell cell = p.getCurrentCell();
 			if (cell != null){

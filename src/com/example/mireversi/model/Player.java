@@ -1,8 +1,6 @@
 package com.example.mireversi.model;
 
 import android.content.Context;
-import android.graphics.Point;
-
 import com.example.mireversi.Pref;
 import com.example.mireversi.model.Cell.E_STATUS;
 

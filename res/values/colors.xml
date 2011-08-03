@@ -11,5 +11,5 @@
 	<color name="cell_fg_current">#FF0000</color>    
 
 	<color name="text_fg">#404040</color>    
-	<color name="turn_rect">#FFFFFF</color>    
+	<color name="turn_rect">#FFFFFF</color>     
 </resources>

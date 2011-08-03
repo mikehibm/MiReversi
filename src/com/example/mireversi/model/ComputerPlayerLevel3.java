@@ -3,12 +3,8 @@ package com.example.mireversi.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-
 import android.graphics.Point;
-
-import com.example.mireversi.Utils;
 import com.example.mireversi.model.Cell.E_STATUS;
-import com.example.mireversi.model.ComputerPlayer.EvaluationComparator;
 
 public class ComputerPlayerLevel3 extends ComputerPlayer{
 
@@ -71,13 +67,6 @@ public class ComputerPlayerLevel3 extends ComputerPlayer{
 			return available_cells.get(0).getPoint();
 		}
 		
-////DEBUG
-//Utils.d("Available cells:\n");
-//for (int i = 0; i < available_cells.size(); i++) {
-//	Cell cur = available_cells.get(i);
-//	Utils.d(String.format("%d x,y=%d,%d   weight=%d", i, cur.getCol(), cur.getRow(),  cur.getEval()));
-//}
- 
 		int blanks = mBoard.countBlankCells();
 		int depth = 1;						//2手先まで読む
 		if (blanks <= 20) depth = 2;		//3手先まで読む
@@ -99,12 +88,12 @@ public class ComputerPlayerLevel3 extends ComputerPlayer{
 		//評価値の高いものから降順にソート。
 		Collections.sort(available_cells, new EvaluationComparator());
 
-//DEBUG
-Utils.d(String.format("Depth=%d:  Sorted available cells:\n", depth));
-for (int i = 0; i < available_cells.size(); i++) {
-	Cell cur = available_cells.get(i);
-	Utils.d(String.format("%d x,y=%d,%d   val=%d,available_cnt=%d", i, cur.getCol(), cur.getRow(),  cur.getEval(), cur.getNextAvaiableCnt()));
-}
+////DEBUG
+//Utils.d(String.format("Depth=%d:  Sorted available cells:\n", depth));
+//for (int i = 0; i < available_cells.size(); i++) {
+//	Cell cur = available_cells.get(i);
+//	Utils.d(String.format("%d x,y=%d,%d   val=%d,available_cnt=%d", i, cur.getCol(), cur.getRow(),  cur.getEval(), cur.getNextAvaiableCnt()));
+//}
 
 		ArrayList<Cell> max_cells = new ArrayList<Cell>();
 		max_cells.add(available_cells.get(0));		//ソート後先頭に来たものを最終候補リストに追加。
@@ -121,20 +110,13 @@ for (int i = 0; i < available_cells.size(); i++) {
 			}
 		}
 		
-////DEBUG
-//Utils.d("Max cells:\n");
-//for (int i = 0; i < max_cells.size(); i++) {
-//	Cell cur = max_cells.get(i);
-//	Utils.d(String.format("%d x,y=%d,%d  val=%d, available_cnt=%d", i, cur.getCol(), cur.getRow(),  cur.getEval(), cur.getNextAvaiableCnt()));
-//}
-
 		//最終候補が複数ある場合はそのなかからランダムに選ぶ。
 		int n = mRnd.nextInt(max_cells.size());
 		Cell chosenCell = max_cells.get(n);
 		pos = chosenCell.getPoint();
 		
-//DEBUG
-Utils.d(String.format("Chosen cell=%d: %d,%d   Eval=%d", n, chosenCell.getCol(), chosenCell.getRow(), chosenCell.getEval() ));
+////DEBUG
+//Utils.d(String.format("Chosen cell=%d: %d,%d   Eval=%d", n, chosenCell.getCol(), chosenCell.getRow(), chosenCell.getEval() ));
 
 		return pos;
 	}
@@ -149,12 +131,12 @@ Utils.d(String.format("Chosen cell=%d: %d,%d   Eval=%d", n, chosenCell.getCol(),
 			src_tbl = weight_table3;
 		}
 
-		int[][] new_tbl = new int[Board.ROWS][Board.COLS];
-		for (int i =0; i < Board.ROWS; i++){
-			for (int j=0; j < Board.COLS; j++){
-				new_tbl[i][j] = src_tbl[i][j];
-			}
-		}
+//		int[][] new_tbl = new int[Board.ROWS][Board.COLS];
+//		for (int i =0; i < Board.ROWS; i++){
+//			for (int j=0; j < Board.COLS; j++){
+//				new_tbl[i][j] = src_tbl[i][j];
+//			}
+//		}
 		
 //		//左上からの確定石の重みを重くする。
 //		addWeightForStableCells(board, new_tbl, new Point(0, 0), 1, 0, -1);
@@ -184,7 +166,8 @@ Utils.d(String.format("Chosen cell=%d: %d,%d   Eval=%d", n, chosenCell.getCol(),
 //}
 //Utils.d("--- Weight Table end");		
 
-		return new_tbl;
+//		return new_tbl;
+		return src_tbl;
 	}
 	
 //	private void addWeightForStableCells(Board board, int[][] tbl, Point point, int dx,int dy, int limit){
@@ -221,19 +204,13 @@ Utils.d(String.format("Chosen cell=%d: %d,%d   Eval=%d", n, chosenCell.getCol(),
 			int val = getWeightTotal(new_board, getWeightTable(new_board));
 			cur.setEval(val);
 
-//DEBUG
-//new_board.write(String.format("--- cur=%d,%d  val=%d, Turn=%s", cur.getCol(), cur.getRow(), val, new_board.getTurnDisplay()),  "---");
-
 			int next_available_cnt = new_board.changeTurn(null);
 			cur.setNextAvaiableCnt(next_available_cnt);
 
 			return;
 		}
 
-//DEBUG
-//Utils.d(String.format("Depth=%d: Turn=%s cur=%d,%d", depth, new_board.getTurnDisplay(), cur.getCol(), cur.getRow() ));
 		int next_available_cnt = new_board.changeTurn(null);
-
 		if (next_available_cnt == 0){
 			getWeightByMiniMax(new_board, cur, depth-1, true);
 			return;
@@ -260,8 +237,6 @@ Utils.d(String.format("Chosen cell=%d: %d,%d   Eval=%d", n, chosenCell.getCol(),
 			}
 		}
 
-//DEBUG
-//Utils.d(String.format("Depth=%d: Turn=%s max=%d,%d  val=%d", depth, new_board.getTurnDisplay(), max_cell.getCol(), max_cell.getRow(), max_cell.getEval() ));
 		cur.setEval(max_cell.getEval() * -1);
 		cur.setNextAvaiableCnt(max_cell.getNextAvaiableCnt()*-1);
 	}

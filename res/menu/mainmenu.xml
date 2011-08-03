@@ -10,7 +10,7 @@
 
     <item android:title="@string/mnu_init" android:id="@+id/mnuInit" 
     	android:orderInCategory="50" android:icon="@android:drawable/ic_menu_revert"></item>
-
+ 
     <item android:title="@string/mnu_exit" android:id="@+id/mnuExit" 
     	android:orderInCategory="90" android:icon="@android:drawable/ic_menu_close_clear_cancel"></item> 
 </menu> 
