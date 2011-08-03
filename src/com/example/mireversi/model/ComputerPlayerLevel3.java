@@ -81,7 +81,7 @@ public class ComputerPlayerLevel3 extends ComputerPlayer{
 		int blanks = mBoard.countBlankCells();
 		int depth = 1;						//2手先まで読む
 		if (blanks <= 20) depth = 2;		//3手先まで読む
-		if (blanks <= 10) depth = 3;		//5手先まで読む
+		if (blanks <= 10) depth = 3;		//4手先まで読む
 		int available_size = available_cells.size();
 		
 		for (int i = 0; i < available_size; i++) {
