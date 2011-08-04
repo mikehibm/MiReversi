@@ -24,6 +24,7 @@ public final class R {
         public static final int screen_bg=0x7f060000;
         public static final int text_fg=0x7f060007;
         public static final int turn_rect=0x7f060008;
+        public static final int winner_rect=0x7f060009;
     }
     public static final class dimen {
         public static final int font_size_status=0x7f070000;

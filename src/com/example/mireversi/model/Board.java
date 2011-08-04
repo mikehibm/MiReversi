@@ -203,7 +203,7 @@ public class Board {
 		return n;
 	}
 	
-	public Cell.E_STATUS getWinner(){
+	public Cell.E_STATUS getWinnerStatus(){
 		E_STATUS winner = E_STATUS.None;
 		int cntB = countCells(E_STATUS.Black);
 		int cntW = countCells(E_STATUS.White);

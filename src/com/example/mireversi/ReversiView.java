@@ -35,6 +35,7 @@ public class ReversiView extends View implements IPlayerCallback {
 	private Paint mPaintCellAvW = new Paint();
 	private Paint mPaintTextFg = new Paint();
 	private Paint mPaintTurnRect = new Paint();
+	private Paint mPaintWinnerRect = new Paint();
 	private Paint mPaintCellCur = new Paint();
 	
 	private int mWidth;
@@ -58,6 +59,7 @@ public class ReversiView extends View implements IPlayerCallback {
 		mPaintCellCur.setColor(getResources().getColor(R.color.cell_fg_current));
 		mPaintTextFg.setColor(getResources().getColor(R.color.text_fg));
 		mPaintTurnRect.setColor(getResources().getColor(R.color.turn_rect));
+		mPaintWinnerRect.setColor(getResources().getColor(R.color.winner_rect));
 
 		//アンチエイリアスを指定。これをしないと縁がギザギザになる。
 		mPaintCellFgB.setAntiAlias(true);
@@ -84,6 +86,11 @@ public class ReversiView extends View implements IPlayerCallback {
 		mPaintTurnRect.setAlpha(128);
 		mPaintTurnRect.setStyle(Style.STROKE);
 		mPaintTurnRect.setStrokeWidth(5f);
+
+		mPaintWinnerRect.setAntiAlias(true);
+		mPaintWinnerRect.setAlpha(192);
+		mPaintWinnerRect.setStyle(Style.STROKE);
+		mPaintWinnerRect.setStrokeWidth(5f);
 
 		init(false);
 	}
@@ -198,11 +205,11 @@ public class ReversiView extends View implements IPlayerCallback {
 	
 	private void finish(){
 		mBoard.setFinished();
-		showCountsToast();
+//		showCountsToast();
 	}
-
+	
 	public void showCountsToast(){
-		Cell.E_STATUS winner = mBoard.getWinner();
+		Cell.E_STATUS winner = mBoard.getWinnerStatus();
 		String msg = "Black: " + mBoard.countCells(Cell.E_STATUS.Black) + "\n"
 			+ "White: " + mBoard.countCells(Cell.E_STATUS.White) + "\n\n";
 		
@@ -342,11 +349,43 @@ public class ReversiView extends View implements IPlayerCallback {
 				canvas.drawCircle(cell.getCx(), cell.getCy(),  mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellCur);
 				invalidate(cell.getRect());
 			}
-		}
+		} 
+		
+		drawWinner(canvas);
 		
 		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
 	}
 	
+	private void drawWinner(Canvas canvas){
+		Player p = mBoard.getCurrentPlayer();
+		if (p != null) return;
+
+		Resources res = getResources();  
+		float turn_rect_inset = res.getDimension(R.dimen.turn_rect_inset); 
+		float turn_rect_round = res.getDimension(R.dimen.turn_rect_round); 
+		float turn_circle_x = res.getDimension(R.dimen.turn_circle_x); 
+		float turn_circle_y = res.getDimension(R.dimen.turn_circle_y); 
+		float turn_text_x = res.getDimension(R.dimen.turn_text_x); 
+		float turn_text_y = res.getDimension(R.dimen.turn_text_y); 
+		float top = mBoard.getRectF().bottom;
+		float center = mBoard.getRectF().width() / 2f;
+
+		RectF rect;
+		if (mBoard.getWinnerStatus() == E_STATUS.Black){
+			rect = new RectF(turn_rect_inset, top + turn_rect_inset, center - turn_rect_inset, mHeight - turn_rect_inset);
+		} else {
+			rect = new RectF(center + turn_rect_inset, top + turn_rect_inset, mWidth - turn_rect_inset, mHeight - turn_rect_inset);
+		}
+		
+		mPaintWinnerRect.setStyle(Style.FILL);
+		mPaintWinnerRect.setAlpha(64);
+		canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintWinnerRect);	//背景
+		mPaintWinnerRect.setStyle(Style.STROKE);
+		mPaintWinnerRect.setAlpha(255);
+		canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintWinnerRect);	//枠
+		
+	}
+
 	
 	public String getState(){
 		String s = mBoard.getStateString();
