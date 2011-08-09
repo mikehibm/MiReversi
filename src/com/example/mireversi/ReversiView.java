@@ -11,6 +11,7 @@ import com.example.mireversi.model.Cell.E_STATUS;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
@@ -384,6 +385,12 @@ public class ReversiView extends View implements IPlayerCallback {
 		mPaintWinnerRect.setAlpha(255);
 		canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintWinnerRect);	//枠
 		
+		String s = "Winner!";
+		Paint paint = new Paint(mPaintTextFg);
+		paint.setColor(Color.YELLOW);
+		paint.setTextSize(mPaintTextFg.getTextSize() * 2);
+		paint.setTextSkewX(-0.3f);
+		canvas.drawText(s, rect.left , top + turn_text_y*2.5f, paint);	
 	}
 
 	
