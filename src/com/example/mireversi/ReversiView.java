@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
+import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -312,20 +313,21 @@ public class ReversiView extends View implements IPlayerCallback {
 		float turn_text_y = res.getDimension(R.dimen.turn_text_y); 
 		float top = mBoard.getRectF().bottom;
 		float center = mBoard.getRectF().width() / 2f;
-		
-		RectF rect;
-		if (mBoard.getTurn() == E_STATUS.Black){
-			rect = new RectF(turn_rect_inset, top + turn_rect_inset, center - turn_rect_inset, mHeight - turn_rect_inset);
-		} else {
-			rect = new RectF(center + turn_rect_inset, top + turn_rect_inset, mWidth - turn_rect_inset, mHeight - turn_rect_inset);
-		}
-		mPaintTurnRect.setStyle(Style.FILL);
-		mPaintTurnRect.setAlpha(128);
-		canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintTurnRect);	//背景
-		mPaintTurnRect.setStyle(Style.STROKE);
-		mPaintTurnRect.setAlpha(255);
-		canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintTurnRect);	//枠
 
+		if (!mBoard.isFinished()){
+			RectF rect;
+			if (mBoard.getTurn() == E_STATUS.Black){
+				rect = new RectF(turn_rect_inset, top + turn_rect_inset, center - turn_rect_inset, mHeight - turn_rect_inset);
+			} else {
+				rect = new RectF(center + turn_rect_inset, top + turn_rect_inset, mWidth - turn_rect_inset, mHeight - turn_rect_inset);
+			}
+			mPaintTurnRect.setStyle(Style.FILL);
+			mPaintTurnRect.setAlpha(128);
+			canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintTurnRect);	//背景
+			mPaintTurnRect.setStyle(Style.STROKE);
+			mPaintTurnRect.setAlpha(255);
+			canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintTurnRect);	//枠
+		}
 
 		canvas.drawCircle(turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellFgB);
 		String s = String.valueOf(mBoard.countCells(E_STATUS.Black));
@@ -352,45 +354,46 @@ public class ReversiView extends View implements IPlayerCallback {
 			}
 		} 
 		
-		drawWinner(canvas);
+		if (mBoard.isFinished()){
+			drawWinner(canvas);
+		}
 		
 		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
 	}
 	
 	private void drawWinner(Canvas canvas){
-		Player p = mBoard.getCurrentPlayer();
-		if (p != null) return;
-
 		Resources res = getResources();  
-		float turn_rect_inset = res.getDimension(R.dimen.turn_rect_inset); 
-		float turn_rect_round = res.getDimension(R.dimen.turn_rect_round); 
-		float turn_circle_x = res.getDimension(R.dimen.turn_circle_x); 
-		float turn_circle_y = res.getDimension(R.dimen.turn_circle_y); 
-		float turn_text_x = res.getDimension(R.dimen.turn_text_x); 
-		float turn_text_y = res.getDimension(R.dimen.turn_text_y); 
-		float top = mBoard.getRectF().bottom;
-		float center = mBoard.getRectF().width() / 2f;
+		float center_x = mBoard.getRectF().width() / 2f;
+		float center_y = mBoard.getRectF().height() / 2f;
+		String s;
 
-		RectF rect;
 		if (mBoard.getWinnerStatus() == E_STATUS.Black){
-			rect = new RectF(turn_rect_inset, top + turn_rect_inset, center - turn_rect_inset, mHeight - turn_rect_inset);
+			s = mBoard.getPlayer1().getName() + " wins!";
+		} else if (mBoard.getWinnerStatus() == E_STATUS.White) {
+			s = mBoard.getPlayer2().getName() + " wins!";
 		} else {
-			rect = new RectF(center + turn_rect_inset, top + turn_rect_inset, mWidth - turn_rect_inset, mHeight - turn_rect_inset);
+			s = "Draw game!";
 		}
 		
-		mPaintWinnerRect.setStyle(Style.FILL);
-		mPaintWinnerRect.setAlpha(64);
-		canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintWinnerRect);	//背景
-		mPaintWinnerRect.setStyle(Style.STROKE);
-		mPaintWinnerRect.setAlpha(255);
-		canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintWinnerRect);	//枠
+		Paint paintBg = new Paint();
+		paintBg.setColor(Color.BLACK);
+		paintBg.setAlpha(128);
+		canvas.drawRect(mBoard.getRectF(), paintBg);
 		
-		String s = "Winner!";
 		Paint paint = new Paint(mPaintTextFg);
 		paint.setColor(Color.YELLOW);
-		paint.setTextSize(mPaintTextFg.getTextSize() * 2);
+		paint.setAlpha(255);
+		paint.setTextAlign(Align.CENTER);
+		paint.setTextSize(mPaintTextFg.getTextSize() * 1.8f);
 		paint.setTextSkewX(-0.3f);
-		canvas.drawText(s, rect.left , top + turn_text_y*2.5f, paint);	
+		paint.setShadowLayer(2, 2, 2, Color.argb(200, 0, 0, 0));
+		
+		canvas.save();
+		canvas.rotate(-30, center_x, center_y);
+		canvas.drawText(s, center_x, center_y, paint);
+		canvas.restore();
+
+		invalidate();			//タイミングによっては文字の一部が消える場合があるので必要。
 	}
 
 	
