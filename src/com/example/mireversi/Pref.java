@@ -143,7 +143,7 @@ public class Pref  extends PreferenceActivity{
            
 		public void onSharedPreferenceChanged(SharedPreferences sp, String key) {  
 			dispSummary();
-		}  
+		}
     };
    
 }

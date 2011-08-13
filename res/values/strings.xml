@@ -16,13 +16,13 @@
     <string name="pref_cat_player1">Player 1</string>  
     <string name="pref_player1">Player 1</string>  
     <string name="pref_player1_default">0</string>  
-    <string name="pref_player1_name">Name</string>  
+    <string name="pref_player1_name">Name (Max. 7 chars)</string>  
     <string name="pref_player1_name_default">Black</string>  
 
     <string name="pref_cat_player2">Player 2</string>  
     <string name="pref_player2">Player 2</string>  
     <string name="pref_player2_default">1</string>  
-    <string name="pref_player2_name">Name</string>  
+    <string name="pref_player2_name">Name (Max. 7 chars)</string>  
     <string name="pref_player2_name_default">White</string>  
 </resources>
  

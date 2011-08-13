@@ -29,6 +29,7 @@
     		android:title="@string/pref_player1_name"
     		android:key="player1_name"
     		android:defaultValue="@string/pref_player1_name_default"
+    		android:maxLength="7"
     		/>	
     	
     </PreferenceCategory>
@@ -50,6 +51,7 @@
     		android:title="@string/pref_player2_name"
     		android:key="player2_name"
     		android:defaultValue="@string/pref_player2_name_default"
+    		android:maxLength="7"
     		/>	
     	
     </PreferenceCategory> 

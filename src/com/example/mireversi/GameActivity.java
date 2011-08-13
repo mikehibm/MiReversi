@@ -1,11 +1,17 @@
 package com.example.mireversi;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 public class GameActivity extends Activity{
 
@@ -17,9 +23,25 @@ public class GameActivity extends Activity{
 
 		Utils.d("GameActivity.onCreate");
 		
+//		reversiview = new ReversiView(this);
+//		setContentView(reversiview);
+		
+		setContentView(R.layout.main);
 		reversiview = new ReversiView(this);
-		setContentView(reversiview);
-
+		ArrayList<View> arr = new ArrayList<View>();
+		arr.add(reversiview);
+		
+		FrameLayout frame;
+		frame = (FrameLayout)this.findViewById(R.id.frame);
+		frame.addView(reversiview, 0);			//一番奥にReversiViewを追加。
+		
+		TextView txt = new TextView(this);
+		txt.setText("TEST");
+		txt.setTextSize(48);
+		//txt.setTextColor(Color.YELLOW);
+		txt.setTextColor(Color.argb(200, 200, 200, 255));
+		txt.setShadowLayer(5, 3, 3, Color.BLACK);
+		frame.addView(txt);
 	}
 	
 	@Override

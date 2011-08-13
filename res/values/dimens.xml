@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>  
 <resources>  
   <dimen name="font_size_status">24sp</dimen>  
+  <dimen name="font_size_name">16sp</dimen>  
   
   <dimen name="turn_rect_inset">8dp</dimen>  
   <dimen name="turn_rect_round">10dp</dimen>

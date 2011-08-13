@@ -4,12 +4,20 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-
-	<TextView
-		android:id="@+id/txtTop"
+    
+    <FrameLayout
+		android:id="@+id/frame"
 	    android:layout_width="fill_parent" 
 	    android:layout_height="wrap_content" 
-	    android:text="@string/app_name"
-	    />
+    	>
+		<TextView
+			android:id="@+id/txtTop"
+		    android:layout_width="wrap_content" 
+		    android:layout_height="wrap_content" 
+		    android:text="@string/app_name"
+		    />
+    	
+    </FrameLayout>
+
 	     
 </LinearLayout>

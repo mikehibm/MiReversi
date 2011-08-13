@@ -329,21 +329,32 @@ public class ReversiView extends View implements IPlayerCallback {
 			canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintTurnRect);	//枠
 		}
 
+		//黒の円
 		canvas.drawCircle(turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellFgB);
-		String s = String.valueOf(mBoard.countCells(E_STATUS.Black));
-		canvas.drawText(s, turn_text_x, top + turn_text_y, mPaintTextFg);					//黒のコマ数
-		canvas.drawText(mBoard.getPlayer1().getName(), turn_circle_x, top + turn_text_y*1.8f, mPaintTextFg);			//黒の名前
-
+		
+		//白の円（外枠付）
 		canvas.drawCircle(center + turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellFgB);
 		canvas.drawCircle(center + turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR * 0.94f, mPaintCellFgW);
+
+		//各プレーヤーのコマ数を表示
+		int fontSize = res.getDimensionPixelSize(R.dimen.font_size_status); 
+		mPaintTextFg.setTextSize(fontSize);
+		String s = String.valueOf(mBoard.countCells(E_STATUS.Black));
+		canvas.drawText(s, turn_text_x, top + turn_text_y, mPaintTextFg);				//黒のコマ数
 		s = String.valueOf(mBoard.countCells(E_STATUS.White));
 		canvas.drawText(s, center + turn_text_x, top + turn_text_y, mPaintTextFg);		//白のコマ数
-		canvas.drawText(mBoard.getPlayer2().getName(), center + turn_circle_x, top + turn_text_y*1.8f, mPaintTextFg);  //白の名前					
+
+		//各プレーヤーの名前を表示
+		int fontSizeName = res.getDimensionPixelSize(R.dimen.font_size_name); 
+		mPaintTextFg.setTextSize(fontSizeName);
+		canvas.drawText(mBoard.getPlayer1().getName(), turn_circle_x, top + turn_text_y*1.8f, mPaintTextFg);			//黒の名前
+		canvas.drawText(mBoard.getPlayer2().getName(), center + turn_circle_x, top + turn_text_y*1.8f, mPaintTextFg);   //白の名前					
 
 		
 		//コンピュータの思考中の場合は進捗状況を表示。
 		Player p = mBoard.getCurrentPlayer();
 		if (p != null && !p.isHuman()){
+//			mPaintTextFg.setTextSize(fontSize);
 //			s = String.valueOf(mBoard.getCurrentPlayer().getProgress()) + "%"; 
 //			canvas.drawText(s, rect.left + turn_circle_x, top + turn_text_y*2.5f, mPaintTextFg);	
 			
@@ -355,6 +366,7 @@ public class ReversiView extends View implements IPlayerCallback {
 		} 
 		
 		if (mBoard.isFinished()){
+			mPaintTextFg.setTextSize(fontSize);
 			drawWinner(canvas);
 		}
 		
@@ -384,7 +396,7 @@ public class ReversiView extends View implements IPlayerCallback {
 		paint.setColor(Color.YELLOW);
 		paint.setAlpha(255);
 		paint.setTextAlign(Align.CENTER);
-		paint.setTextSize(mPaintTextFg.getTextSize() * 1.8f);
+		paint.setTextSize(mPaintTextFg.getTextSize() * 1.6f);
 		paint.setTextSkewX(-0.3f);
 		paint.setShadowLayer(2, 2, 2, Color.argb(200, 0, 0, 0));
 		
