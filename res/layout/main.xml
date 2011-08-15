@@ -8,13 +8,23 @@
     <FrameLayout
 		android:id="@+id/frame"
 	    android:layout_width="fill_parent" 
-	    android:layout_height="wrap_content" 
+	    android:layout_height="fill_parent" 
     	>
 		<TextView
-			android:id="@+id/txtTop"
+			android:id="@+id/txtWinner"
 		    android:layout_width="wrap_content" 
 		    android:layout_height="wrap_content" 
 		    android:text="@string/app_name"
+		    android:textSize="@dimen/font_size_winner"
+		    android:textColor="@color/winner_text"
+		    android:shadowRadius="5"
+		    android:shadowDx="5"
+		    android:shadowDy="5"
+		    android:shadowColor="@color/winner_text_shadow"
+		    android:layout_gravity="center"
+		    android:textStyle="italic"
+		    android:marqueeRepeatLimit="marquee_forever"
+		    
 		    />
     	
     </FrameLayout>

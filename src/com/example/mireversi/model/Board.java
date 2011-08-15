@@ -202,6 +202,17 @@ public class Board {
 		}
 		return n;
 	}
+
+	public Player getWinner(){
+		E_STATUS w = getWinnerStatus();
+		if (w == E_STATUS.None){
+			return null;
+		} else if (w == E_STATUS.Black){
+			return this.getPlayer1();
+		} else {
+			return this.getPlayer2();
+		}
+	}
 	
 	public Cell.E_STATUS getWinnerStatus(){
 		E_STATUS winner = E_STATUS.None;

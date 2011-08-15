@@ -13,4 +13,7 @@
 	<color name="text_fg">#404040</color>    
 	<color name="turn_rect">#FFFFFF</color>     
 	<color name="winner_rect">#0000FF</color>     
+
+	<color name="winner_text">#F0FFFF00</color>     
+	<color name="winner_text_shadow">#000000</color>     
 </resources>

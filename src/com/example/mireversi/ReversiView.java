@@ -42,7 +42,7 @@ public class ReversiView extends View implements IPlayerCallback {
 	
 	private int mWidth;
 	private int mHeight;
-	private static final float CELL_SIZE_FACTOR = 0.42f;
+	private static final float CELL_SIZE_FACTOR = 0.40f;
 	private boolean mPaused; 
 
 	public ReversiView(Context context) {
@@ -110,6 +110,9 @@ public class ReversiView extends View implements IPlayerCallback {
 		if (auto_start){
 			callPlayer();
 		}
+		
+		GameActivity activity = (GameActivity)this.getContext();
+		activity.hideWinner("Started!");
 	}
 	
 	@Override
@@ -176,6 +179,9 @@ public class ReversiView extends View implements IPlayerCallback {
 			for (Cell cell : changedCells) {
 				invalidate(cell.getRect());			//変更された領域のみを再描画
 			}
+			
+			//画面下部のステータス表示領域を再描画
+			invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
 		}
 	}
 	
@@ -208,6 +214,8 @@ public class ReversiView extends View implements IPlayerCallback {
 	private void finish(){
 		mBoard.setFinished();
 //		showCountsToast();
+		
+		invalidate();			
 	}
 	
 	public void showCountsToast(){
@@ -370,42 +378,41 @@ public class ReversiView extends View implements IPlayerCallback {
 			drawWinner(canvas);
 		}
 		
-		invalidate(0, (int)mBoard.getRectF().bottom, mWidth, mHeight);
 	}
 	
 	private void drawWinner(Canvas canvas){
-		Resources res = getResources();  
-		float center_x = mBoard.getRectF().width() / 2f;
-		float center_y = mBoard.getRectF().height() / 2f;
+//		Resources res = getResources();  
+//		float center_x = mBoard.getRectF().width() / 2f;
+//		float center_y = mBoard.getRectF().height() / 2f;
 		String s;
-
-		if (mBoard.getWinnerStatus() == E_STATUS.Black){
-			s = mBoard.getPlayer1().getName() + " wins!";
-		} else if (mBoard.getWinnerStatus() == E_STATUS.White) {
-			s = mBoard.getPlayer2().getName() + " wins!";
+		Player winner = mBoard.getWinner();
+		if (winner != null){
+			s = winner.getName() + " wins! ";
 		} else {
 			s = "Draw game!";
 		}
-		
+
+		//盤面全体をグレーアウト
 		Paint paintBg = new Paint();
 		paintBg.setColor(Color.BLACK);
 		paintBg.setAlpha(128);
 		canvas.drawRect(mBoard.getRectF(), paintBg);
 		
-		Paint paint = new Paint(mPaintTextFg);
-		paint.setColor(Color.YELLOW);
-		paint.setAlpha(255);
-		paint.setTextAlign(Align.CENTER);
-		paint.setTextSize(mPaintTextFg.getTextSize() * 1.6f);
-		paint.setTextSkewX(-0.3f);
-		paint.setShadowLayer(2, 2, 2, Color.argb(200, 0, 0, 0));
-		
-		canvas.save();
-		canvas.rotate(-30, center_x, center_y);
-		canvas.drawText(s, center_x, center_y, paint);
-		canvas.restore();
+//		Paint paint = new Paint(mPaintTextFg);
+//		paint.setColor(Color.YELLOW);
+//		paint.setAlpha(255);
+//		paint.setTextAlign(Align.CENTER);
+//		paint.setTextSize(mPaintTextFg.getTextSize() * 1.6f);
+//		paint.setTextSkewX(-0.3f);
+//		paint.setShadowLayer(2, 2, 2, Color.argb(200, 0, 0, 0));
+//		
+//		canvas.save();
+//		canvas.rotate(-30, center_x, center_y);
+//		canvas.drawText(s, center_x, center_y, paint);
+//		canvas.restore();
 
-		invalidate();			//タイミングによっては文字の一部が消える場合があるので必要。
+		GameActivity activity =  (GameActivity)this.getContext();
+		activity.showWinner(s);
 	}
 
 	

@@ -2,6 +2,7 @@
 <resources>  
   <dimen name="font_size_status">24sp</dimen>  
   <dimen name="font_size_name">16sp</dimen>  
+  <dimen name="font_size_winner">40sp</dimen>  
   
   <dimen name="turn_rect_inset">8dp</dimen>  
   <dimen name="turn_rect_round">10dp</dimen>
@@ -11,4 +12,6 @@
     
   <dimen name="turn_text_x">64dp</dimen>   
   <dimen name="turn_text_y">46dp</dimen>  
+
+  <dimen name="winner_translate_y">-80dp</dimen>  
 </resources>  

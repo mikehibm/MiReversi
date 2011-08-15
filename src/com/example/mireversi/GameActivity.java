@@ -2,6 +2,8 @@ package com.example.mireversi;
 
 import java.util.ArrayList;
 
+import com.example.mireversi.model.Player;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,12 +12,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 public class GameActivity extends Activity{
 
-	ReversiView reversiview = null;
+	ReversiView mReversiView = null;
+	Animation mAnimWinner = null;
+	Animation mAnimFadeOut = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -23,35 +29,33 @@ public class GameActivity extends Activity{
 
 		Utils.d("GameActivity.onCreate");
 		
-//		reversiview = new ReversiView(this);
-//		setContentView(reversiview);
-		
+		mAnimWinner = AnimationUtils.loadAnimation(this, R.anim.winner);
+//		mAnimWinner.setFillEnabled(true);
+//		mAnimWinner.setFillAfter(true);
+		mAnimFadeOut = AnimationUtils.loadAnimation(this, R.anim.fadeout);
+
 		setContentView(R.layout.main);
-		reversiview = new ReversiView(this);
+		mReversiView = new ReversiView(this);
 		ArrayList<View> arr = new ArrayList<View>();
-		arr.add(reversiview);
+		arr.add(mReversiView);
 		
 		FrameLayout frame;
 		frame = (FrameLayout)this.findViewById(R.id.frame);
-		frame.addView(reversiview, 0);			//一番奥にReversiViewを追加。
+		frame.addView(mReversiView, 0);			//一番奥にReversiViewを追加。
 		
-		TextView txt = new TextView(this);
-		txt.setText("TEST");
-		txt.setTextSize(48);
-		//txt.setTextColor(Color.YELLOW);
-		txt.setTextColor(Color.argb(200, 200, 200, 255));
-		txt.setShadowLayer(5, 3, 3, Color.BLACK);
-		frame.addView(txt);
+		TextView txt = (TextView)findViewById(R.id.txtWinner);
+		txt.bringToFront();
+//		txt.setVisibility(View.INVISIBLE);
 	}
 	
 	@Override
 	protected void onPause() {
 		Utils.d("GameActivity.onPause");
 
-		Pref.setState(this.getApplicationContext(), reversiview.getState());
+		Pref.setState(this.getApplicationContext(), mReversiView.getState());
 		
 		//別スレッドで思考ルーチンが動いていれば中断する。
-		reversiview.pause();
+		mReversiView.pause();
 		
 		super.onPause();
 	}
@@ -60,7 +64,7 @@ public class GameActivity extends Activity{
 	protected void onResume() {
 		Utils.d("GameActivity.onResume");
 		
-		reversiview.resume(Pref.getState(this.getApplicationContext()));
+		mReversiView.resume(Pref.getState(this.getApplicationContext()));
 
 		super.onResume();
 	}
@@ -82,10 +86,10 @@ public class GameActivity extends Activity{
 			openPref();
 			break;
 		case R.id.mnuStat:
-			reversiview.showCountsToast();
+			mReversiView.showCountsToast();
 			break;
 		case R.id.mnuInit:
-			reversiview.init(true);
+			mReversiView.init(true);
 			break;
 		default:
 			break;
@@ -99,4 +103,20 @@ public class GameActivity extends Activity{
 		startActivity(intent);
 	}
 
+	public void showWinner(String msg){
+		TextView txt = (TextView)findViewById(R.id.txtWinner);
+		txt.setText(msg);
+		if (txt.getVisibility() == View.INVISIBLE){
+			txt.setVisibility(View.VISIBLE);
+			txt.startAnimation(mAnimWinner);
+		}
+	}
+
+	public void hideWinner(String msg){
+		TextView txt = (TextView)findViewById(R.id.txtWinner);
+		if (txt.getVisibility() == View.VISIBLE){
+			txt.startAnimation(mAnimFadeOut);
+			txt.setVisibility(View.INVISIBLE);
+		}
+	}
 }
