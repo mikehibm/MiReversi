@@ -2,11 +2,8 @@ package com.example.mireversi;
 
 import java.util.ArrayList;
 
-import com.example.mireversi.model.Player;
-
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,8 +27,6 @@ public class GameActivity extends Activity{
 		Utils.d("GameActivity.onCreate");
 		
 		mAnimWinner = AnimationUtils.loadAnimation(this, R.anim.winner);
-//		mAnimWinner.setFillEnabled(true);
-//		mAnimWinner.setFillAfter(true);
 		mAnimFadeOut = AnimationUtils.loadAnimation(this, R.anim.fadeout);
 
 		setContentView(R.layout.main);
@@ -45,7 +40,6 @@ public class GameActivity extends Activity{
 		
 		TextView txt = (TextView)findViewById(R.id.txtWinner);
 		txt.bringToFront();
-//		txt.setVisibility(View.INVISIBLE);
 	}
 	
 	@Override

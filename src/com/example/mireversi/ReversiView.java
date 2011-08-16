@@ -15,7 +15,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
-import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -227,7 +226,7 @@ public class ReversiView extends View implements IPlayerCallback {
 			if (winner != Cell.E_STATUS.None){
 				msg += "Winner is: " + Cell.statusToDisplay(winner) + "!!";
 			} else {
-				msg += "Draw game!";
+				msg += "Draw game! ";
 			}
 		} else {
 			if (winner != Cell.E_STATUS.None){
@@ -381,15 +380,12 @@ public class ReversiView extends View implements IPlayerCallback {
 	}
 	
 	private void drawWinner(Canvas canvas){
-//		Resources res = getResources();  
-//		float center_x = mBoard.getRectF().width() / 2f;
-//		float center_y = mBoard.getRectF().height() / 2f;
 		String s;
 		Player winner = mBoard.getWinner();
 		if (winner != null){
 			s = winner.getName() + " wins! ";
 		} else {
-			s = "Draw game!";
+			s = "Draw game! ";
 		}
 
 		//盤面全体をグレーアウト
@@ -398,19 +394,6 @@ public class ReversiView extends View implements IPlayerCallback {
 		paintBg.setAlpha(128);
 		canvas.drawRect(mBoard.getRectF(), paintBg);
 		
-//		Paint paint = new Paint(mPaintTextFg);
-//		paint.setColor(Color.YELLOW);
-//		paint.setAlpha(255);
-//		paint.setTextAlign(Align.CENTER);
-//		paint.setTextSize(mPaintTextFg.getTextSize() * 1.6f);
-//		paint.setTextSkewX(-0.3f);
-//		paint.setShadowLayer(2, 2, 2, Color.argb(200, 0, 0, 0));
-//		
-//		canvas.save();
-//		canvas.rotate(-30, center_x, center_y);
-//		canvas.drawText(s, center_x, center_y, paint);
-//		canvas.restore();
-
 		GameActivity activity =  (GameActivity)this.getContext();
 		activity.showWinner(s);
 	}
