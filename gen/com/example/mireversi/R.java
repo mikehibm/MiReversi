@@ -11,7 +11,9 @@ public final class R {
     public static final class anim {
         public static final int fadein=0x7f040000;
         public static final int fadeout=0x7f040001;
-        public static final int winner=0x7f040002;
+        public static final int grayin=0x7f040002;
+        public static final int grayout=0x7f040003;
+        public static final int winner=0x7f040004;
     }
     public static final class array {
         public static final int entries_players=0x7f060000;
@@ -50,11 +52,12 @@ public final class R {
     }
     public static final class id {
         public static final int frame=0x7f0b0000;
-        public static final int mnuExit=0x7f0b0005;
-        public static final int mnuInit=0x7f0b0004;
-        public static final int mnuPref=0x7f0b0002;
-        public static final int mnuStat=0x7f0b0003;
-        public static final int txtWinner=0x7f0b0001;
+        public static final int mnuExit=0x7f0b0006;
+        public static final int mnuInit=0x7f0b0005;
+        public static final int mnuPref=0x7f0b0003;
+        public static final int mnuStat=0x7f0b0004;
+        public static final int txtWinner=0x7f0b0002;
+        public static final int vwBack=0x7f0b0001;
     }
     public static final class layout {
         public static final int main=0x7f030000;

@@ -104,6 +104,13 @@ public class GameActivity extends Activity{
 			txt.setVisibility(View.VISIBLE);
 			txt.startAnimation(mAnimWinner);
 		}
+		
+		View vwBack = (View)findViewById(R.id.vwBack);
+		if (vwBack.getVisibility() == View.INVISIBLE){
+			Animation anim = AnimationUtils.loadAnimation(this, R.anim.grayin);
+			vwBack.startAnimation(anim);
+			vwBack.setVisibility(View.VISIBLE);
+		}
 	}
 
 	public void hideWinner(String msg){
@@ -111,6 +118,13 @@ public class GameActivity extends Activity{
 		if (txt.getVisibility() == View.VISIBLE){
 			txt.startAnimation(mAnimFadeOut);
 			txt.setVisibility(View.INVISIBLE);
+		}
+
+		View vwBack = (View)findViewById(R.id.vwBack);
+		if (vwBack.getVisibility() == View.VISIBLE){
+			Animation anim = AnimationUtils.loadAnimation(this, R.anim.grayout);
+			vwBack.startAnimation(anim);
+			vwBack.setVisibility(View.INVISIBLE);
 		}
 	}
 }

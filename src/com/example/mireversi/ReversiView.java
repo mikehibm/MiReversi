@@ -388,11 +388,11 @@ public class ReversiView extends View implements IPlayerCallback {
 			s = "Draw game! ";
 		}
 
-		//盤面全体をグレーアウト
-		Paint paintBg = new Paint();
-		paintBg.setColor(Color.BLACK);
-		paintBg.setAlpha(128);
-		canvas.drawRect(mBoard.getRectF(), paintBg);
+//		//盤面全体をグレーアウト
+//		Paint paintBg = new Paint();
+//		paintBg.setColor(Color.BLACK);
+//		paintBg.setAlpha(128);
+//		canvas.drawRect(mBoard.getRectF(), paintBg);
 		
 		GameActivity activity =  (GameActivity)this.getContext();
 		activity.showWinner(s);

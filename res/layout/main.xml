@@ -10,6 +10,13 @@
 	    android:layout_width="fill_parent" 
 	    android:layout_height="fill_parent" 
     	>
+		<View
+			android:id="@+id/vwBack"
+			android:layout_width="fill_parent" 
+			android:layout_height="fill_parent"
+			android:background="#000000"
+			/>
+    	
 		<TextView
 			android:id="@+id/txtWinner"
 		    android:layout_width="wrap_content" 
@@ -24,9 +31,8 @@
 		    android:layout_gravity="center"
 		    android:textStyle="italic"
 		    android:marqueeRepeatLimit="marquee_forever"
-		    
 		    />
-    	
+		    
     </FrameLayout>
 
 	     
