@@ -267,7 +267,7 @@ public class ReversiView extends View implements IPlayerCallback {
 		Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.a6);
 		canvas.drawBitmap(bitmap, 0f, 0f, mPaintBoardBg);
 		Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-		canvas.drawBitmap(bitmap, src, mBoard.getRectF(), mPaintBoardBg);
+		canvas.drawBitmap(bitmap, src, mBoard.getRectF(), null);
 
 		//縦線
 		for (int i = 0; i < Board.COLS; i++) {
