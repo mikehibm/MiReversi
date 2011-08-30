@@ -10,10 +10,13 @@ import com.example.mireversi.model.Cell.E_STATUS;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Paint.Style;
 import android.text.TextUtils;
@@ -259,7 +262,12 @@ public class ReversiView extends View implements IPlayerCallback {
 		canvas.drawRect(0 ,0, mWidth, mHeight, mPaintScreenBg);
 
 		//ボードの背景
-		canvas.drawRect(mBoard.getRectF(), mPaintBoardBg);
+		//canvas.drawRect(mBoard.getRectF(), mPaintBoardBg);
+		Resources res = this.getContext().getResources();
+		Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.a6);
+		canvas.drawBitmap(bitmap, 0f, 0f, mPaintBoardBg);
+		Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+		canvas.drawBitmap(bitmap, src, mBoard.getRectF(), mPaintBoardBg);
 
 		//縦線
 		for (int i = 0; i < Board.COLS; i++) {
