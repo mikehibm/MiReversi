@@ -261,7 +261,7 @@ public class ReversiView extends View implements IPlayerCallback {
 		//画面全体の背景
 		canvas.drawRect(0 ,0, mWidth, mHeight, mPaintScreenBg);
 
-		//ボードの背景
+		//ボードの背景 
 		//canvas.drawRect(mBoard.getRectF(), mPaintBoardBg);
 		Resources res = this.getContext().getResources();
 		Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.a6);
