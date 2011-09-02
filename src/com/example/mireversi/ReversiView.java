@@ -13,7 +13,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -258,14 +257,10 @@ public class ReversiView extends View implements IPlayerCallback {
 		float w = cw * CELL_SIZE_FACTOR;
 		boolean show_hints = Pref.getShowHints(getContext());
 
-		//画面全体の背景
-		canvas.drawRect(0 ,0, mWidth, mHeight, mPaintScreenBg);
-
 		//ボードの背景 
 		//canvas.drawRect(mBoard.getRectF(), mPaintBoardBg);
 		Resources res = this.getContext().getResources();
 		Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.a6);
-		canvas.drawBitmap(bitmap, 0f, 0f, mPaintBoardBg);
 		Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
 		canvas.drawBitmap(bitmap, src, mBoard.getRectF(), null);
 
@@ -289,8 +284,8 @@ public class ReversiView extends View implements IPlayerCallback {
 					canvas.drawCircle(cell.getCx(), cell.getCy(), w, mPaintCellFgB);
 				} else if(st == E_STATUS.White){
 					canvas.drawCircle(cell.getCx(), cell.getCy(), w, mPaintCellFgW);
-				} else {
-					drawHints(cell, canvas, cw, show_hints);
+				} else if (show_hints) {
+					drawHints(cell, canvas, cw);
 				}
 			}
 		}
@@ -299,11 +294,7 @@ public class ReversiView extends View implements IPlayerCallback {
 		drawStatus(canvas);
 	}
 	
-	private void drawHints(Cell cell, Canvas canvas, float cw, boolean show_hints){
-		if (!show_hints){
-			return;
-		}
-
+	private void drawHints(Cell cell, Canvas canvas, float cw){
 		float aw = cw * 0.1f;
 
 		//次に配置可能なセルであれば小さな丸を表示する
@@ -313,8 +304,8 @@ public class ReversiView extends View implements IPlayerCallback {
 			} else {
 				canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintCellAvW);
 			}
-		} else {
-			canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintBoardBg);
+//		} else {
+//			canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintBoardBg);
 		}
 	}
 
@@ -328,6 +319,10 @@ public class ReversiView extends View implements IPlayerCallback {
 		float turn_text_y = res.getDimension(R.dimen.turn_text_y); 
 		float top = mBoard.getRectF().bottom;
 		float center = mBoard.getRectF().width() / 2f;
+
+		//ボード以外の余白部分の背景
+		canvas.drawRect(0, top, mWidth, mHeight, mPaintScreenBg);
+
 
 		if (!mBoard.isFinished()){
 			RectF rect;
@@ -372,7 +367,8 @@ public class ReversiView extends View implements IPlayerCallback {
 //			mPaintTextFg.setTextSize(fontSize);
 //			s = String.valueOf(mBoard.getCurrentPlayer().getProgress()) + "%"; 
 //			canvas.drawText(s, rect.left + turn_circle_x, top + turn_text_y*2.5f, mPaintTextFg);	
-			
+
+			//現在思考中のセルを赤丸で表示。
 			Cell cell = p.getCurrentCell();
 			if (cell != null){
 				canvas.drawCircle(cell.getCx(), cell.getCy(),  mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellCur);
