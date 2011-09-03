@@ -4,9 +4,9 @@
 
 	<color name="board_bg">#00B400</color>    
 	<color name="board_border">#282828</color>    
-
-	<color name="cell_fg_black">#000000</color>    
+  
 	<color name="cell_fg_white">#FFFFFF</color>    
+	<color name="cell_fg_black">#000000</color>    
 	<color name="cell_bg_available">#FFCCCC</color>    
 	<color name="cell_fg_current">#FF0000</color>    
 

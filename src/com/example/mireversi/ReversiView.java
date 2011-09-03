@@ -79,12 +79,6 @@ public class ReversiView extends View implements IPlayerCallback {
 		mPaintCellAvW.setAlpha(64);
 		mPaintCellCur.setAlpha(128);
 		
-		Shader s1 = new RadialGradient(20, 20, 40, Color.BLACK, Color.WHITE, Shader.TileMode.CLAMP);  
-		mPaintCellFgB.setShader(s1);
-		Shader s2 = new RadialGradient(20, 20, 40, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);  
-		mPaintCellFgW.setShader(s2);
-
-		
 		mPaintTextFg.setAntiAlias(true);
 		mPaintTextFg.setStyle(Style.FILL);
 		
@@ -307,10 +301,28 @@ public class ReversiView extends View implements IPlayerCallback {
 	}
 	
 	private void drawStone(Cell cell, Canvas canvas, float cw, Cell.E_STATUS st){
-		float w = cw * CELL_SIZE_FACTOR;
+		int INSET = 4;
+		//		float w = cw * CELL_SIZE_FACTOR;
+//		float cx = cell.getCx();
+//		float cy = cell.getCy();
 		
-		Paint pt = st == E_STATUS.Black ? mPaintCellFgB : mPaintCellFgW;  
-		canvas.drawCircle(cell.getCx(), cell.getCy(), w, pt);
+//		Paint pt = st == E_STATUS.Black ? mPaintCellFgB : mPaintCellFgW;  
+//		canvas.drawCircle(cx, cy, w, pt);
+
+		Resources res = this.getContext().getResources();
+		Bitmap bitmap = st == E_STATUS.Black ? BitmapFactory.decodeResource(res, R.drawable.b1) : BitmapFactory.decodeResource(res, R.drawable.w1);
+		Bitmap bm = Bitmap.createScaledBitmap(bitmap, 
+													(int)cell.getWidth()-INSET*2, 
+													(int)cell.getHeight()-INSET*2, 
+													true);
+//		Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+//		RectF rect = cell.getRectF();
+//		rect.inset(3f, 3f);
+//		Paint pt = new Paint();
+//		pt.setAntiAlias(true);
+//		canvas.drawBitmap(bm, src, rect, pt);
+		canvas.drawBitmap(bm, cell.getLeft()+(float)INSET, cell.getTop()+(float)INSET, null);
+	
 	}
 	
 	private void drawHints(Cell cell, Canvas canvas, float cw){
@@ -353,12 +365,14 @@ public class ReversiView extends View implements IPlayerCallback {
 			canvas.drawRoundRect(rect, turn_rect_round, turn_rect_round, mPaintTurnRect);	//枠
 		}
 
+		float circle_w = mBoard.getCellWidth() * CELL_SIZE_FACTOR;
+		
 		//黒の円
-		canvas.drawCircle(turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellFgB);
+		canvas.drawCircle(turn_circle_x, top + turn_circle_y, circle_w, mPaintCellFgB);
 		
 		//白の円（外枠付）
-		canvas.drawCircle(center + turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellFgB);
-		canvas.drawCircle(center + turn_circle_x, top + turn_circle_y, mBoard.getCellWidth() * CELL_SIZE_FACTOR * 0.94f, mPaintCellFgW);
+		canvas.drawCircle(center + turn_circle_x, top + turn_circle_y, circle_w, mPaintCellFgB);
+		canvas.drawCircle(center + turn_circle_x, top + turn_circle_y, circle_w * 0.94f, mPaintCellFgW);
 
 		//各プレーヤーのコマ数を表示
 		int fontSize = res.getDimensionPixelSize(R.dimen.font_size_status); 

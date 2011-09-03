@@ -25,9 +25,9 @@ public final class R {
         public static final int board_bg=0x7f070001;
         public static final int board_border=0x7f070002;
         public static final int cell_bg_available=0x7f070005;
-        public static final int cell_fg_black=0x7f070003;
+        public static final int cell_fg_black=0x7f070004;
         public static final int cell_fg_current=0x7f070006;
-        public static final int cell_fg_white=0x7f070004;
+        public static final int cell_fg_white=0x7f070003;
         public static final int screen_bg=0x7f070000;
         public static final int text_fg=0x7f070007;
         public static final int turn_rect=0x7f070008;
@@ -49,7 +49,9 @@ public final class R {
     }
     public static final class drawable {
         public static final int a6=0x7f020000;
-        public static final int icon=0x7f020001;
+        public static final int b1=0x7f020001;
+        public static final int icon=0x7f020002;
+        public static final int w1=0x7f020003;
     }
     public static final class id {
         public static final int frame=0x7f0b0000;
