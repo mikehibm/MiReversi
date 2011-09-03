@@ -13,10 +13,14 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.RadialGradient;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.graphics.Paint.Style;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -74,6 +78,12 @@ public class ReversiView extends View implements IPlayerCallback {
 		mPaintCellAvB.setAlpha(32);
 		mPaintCellAvW.setAlpha(64);
 		mPaintCellCur.setAlpha(128);
+		
+		Shader s1 = new RadialGradient(20, 20, 40, Color.BLACK, Color.WHITE, Shader.TileMode.CLAMP);  
+		mPaintCellFgB.setShader(s1);
+		Shader s2 = new RadialGradient(20, 20, 40, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);  
+		mPaintCellFgW.setShader(s2);
+
 		
 		mPaintTextFg.setAntiAlias(true);
 		mPaintTextFg.setStyle(Style.FILL);
@@ -254,7 +264,6 @@ public class ReversiView extends View implements IPlayerCallback {
 		float bh = mBoard.getRectF().height();
 		float cw = mBoard.getCellWidth();
 		float ch = mBoard.getCellHeidht();
-		float w = cw * CELL_SIZE_FACTOR;
 		boolean show_hints = Pref.getShowHints(getContext());
 
 		//ボードの背景 
@@ -273,40 +282,45 @@ public class ReversiView extends View implements IPlayerCallback {
 			canvas.drawLine(0, ch * (i+1), bw, ch * (i+1), mPaintBoardBorder);
 		}
 
-		//全てのCellについてコマが配置されていれば描く
+		//全てのCellを描画
+		drawCells(canvas, cw, show_hints);
+		
+		//手番の表示、現在の黒と白の数の表示
+		drawStatus(canvas);
+	}
+	
+	//全てのCellについてコマが配置されていれば描く
+	private void drawCells(Canvas canvas, float cw, boolean show_hints){
 		Cell[][] cells = mBoard.getCells();
 		for (int i = 0; i < Board.ROWS; i++) {
 			for (int j = 0; j < Board.COLS; j++) {
 				Cell cell =cells[i][j]; 
 				Cell.E_STATUS st = cell.getStatus();
 				
-				if (st == E_STATUS.Black){
-					canvas.drawCircle(cell.getCx(), cell.getCy(), w, mPaintCellFgB);
-				} else if(st == E_STATUS.White){
-					canvas.drawCircle(cell.getCx(), cell.getCy(), w, mPaintCellFgW);
-				} else if (show_hints) {
-					drawHints(cell, canvas, cw);
+				if (st == E_STATUS.None){
+					if (show_hints) drawHints(cell, canvas, cw);
+				} else {
+					drawStone(cell, canvas, cw, st);
 				}
 			}
 		}
+	}
+	
+	private void drawStone(Cell cell, Canvas canvas, float cw, Cell.E_STATUS st){
+		float w = cw * CELL_SIZE_FACTOR;
 		
-		//手番の表示、現在の黒と白の数の表示
-		drawStatus(canvas);
+		Paint pt = st == E_STATUS.Black ? mPaintCellFgB : mPaintCellFgW;  
+		canvas.drawCircle(cell.getCx(), cell.getCy(), w, pt);
 	}
 	
 	private void drawHints(Cell cell, Canvas canvas, float cw){
-		float aw = cw * 0.1f;
-
+		if (cell.getReversibleCells().size() == 0) 
+			return;
+		
 		//次に配置可能なセルであれば小さな丸を表示する
-		if (cell.getReversibleCells().size() > 0){
-			if (mBoard.getTurn() == Cell.E_STATUS.Black){
-				canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintCellAvB);
-			} else {
-				canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintCellAvW);
-			}
-//		} else {
-//			canvas.drawCircle(cell.getCx(), cell.getCy(), aw, mPaintBoardBg);
-		}
+		float aw = cw * 0.1f;
+		Paint pt = mBoard.getTurn() == Cell.E_STATUS.Black ? mPaintCellAvB : mPaintCellAvW;
+		canvas.drawCircle(cell.getCx(), cell.getCy(), aw, pt);
 	}
 
 	private void drawStatus(Canvas canvas){
