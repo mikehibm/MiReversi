@@ -45,6 +45,10 @@ public class ReversiView extends View implements IPlayerCallback {
 	private Paint mPaintWinnerRect = new Paint();
 	private Paint mPaintCellCur = new Paint();
 	
+	private Bitmap mBitmapWhite;
+	private Bitmap mBitmapBlack;
+	private Bitmap mBitmapBoard;
+	
 	private int mWidth;
 	private int mHeight;
 	private static final float CELL_SIZE_FACTOR = 0.40f;
@@ -128,8 +132,32 @@ public class ReversiView extends View implements IPlayerCallback {
 		this.mHeight = getHeight();
 		mBoard.setSize(this.mWidth, this.mHeight);
 		
+		if (mBitmapBoard == null){
+			loadBitmap();
+		}
+		
 		drawBoard(canvas);
 	}
+	
+	private void loadBitmap(){
+		float cw = mBoard.getCellWidth();
+		float ch = mBoard.getCellHeight();
+		int INSET = (int)(cw * CELL_SIZE_FACTOR * 0.3);
+
+		Resources res = this.getContext().getResources();
+		
+		//ボードの背景
+		Bitmap board = BitmapFactory.decodeResource(res, R.drawable.a6);
+		mBitmapBoard = Bitmap.createScaledBitmap(board, (int)mBoard.getRectF().width(), (int)mBoard.getRectF().height(), true);
+		
+		//黒のコマ
+		Bitmap black = BitmapFactory.decodeResource(res, R.drawable.b1);
+		mBitmapBlack = Bitmap.createScaledBitmap(black, (int)cw-INSET*2, (int)ch-INSET*2, true);
+
+		//白のコマ
+		Bitmap white = BitmapFactory.decodeResource(res, R.drawable.w1);
+		mBitmapWhite = Bitmap.createScaledBitmap(white, (int)cw-INSET*2, (int)ch-INSET*2, true);
+}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -138,7 +166,7 @@ public class ReversiView extends View implements IPlayerCallback {
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_UP:
-			int r = (int)(y / mBoard.getCellHeidht());
+			int r = (int)(y / mBoard.getCellHeight());
 			int c = (int)(x / mBoard.getCellWidth());
 			if (r < Board.ROWS && c < Board.COLS && r >=0 && c >= 0){
 				Player p = mBoard.getCurrentPlayer();
@@ -257,15 +285,10 @@ public class ReversiView extends View implements IPlayerCallback {
 		float bw = mBoard.getRectF().width();
 		float bh = mBoard.getRectF().height();
 		float cw = mBoard.getCellWidth();
-		float ch = mBoard.getCellHeidht();
-		boolean show_hints = Pref.getShowHints(getContext());
+		float ch = mBoard.getCellHeight();
 
 		//ボードの背景 
-		//canvas.drawRect(mBoard.getRectF(), mPaintBoardBg);
-		Resources res = this.getContext().getResources();
-		Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.a6);
-		Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-		canvas.drawBitmap(bitmap, src, mBoard.getRectF(), null);
+		canvas.drawBitmap(mBitmapBoard, 0, 0, null);
 
 		//縦線
 		for (int i = 0; i < Board.COLS; i++) {
@@ -277,14 +300,16 @@ public class ReversiView extends View implements IPlayerCallback {
 		}
 
 		//全てのCellを描画
-		drawCells(canvas, cw, show_hints);
+		drawCells(canvas, cw);
 		
 		//手番の表示、現在の黒と白の数の表示
 		drawStatus(canvas);
 	}
 	
 	//全てのCellについてコマが配置されていれば描く
-	private void drawCells(Canvas canvas, float cw, boolean show_hints){
+	private void drawCells(Canvas canvas, float cw){
+		boolean show_hints = Pref.getShowHints(getContext());
+
 		Cell[][] cells = mBoard.getCells();
 		for (int i = 0; i < Board.ROWS; i++) {
 			for (int j = 0; j < Board.COLS; j++) {
@@ -301,27 +326,19 @@ public class ReversiView extends View implements IPlayerCallback {
 	}
 	
 	private void drawStone(Cell cell, Canvas canvas, float cw, Cell.E_STATUS st){
-		int INSET = 4;
-		//		float w = cw * CELL_SIZE_FACTOR;
+//		float w = cw * CELL_SIZE_FACTOR;
 //		float cx = cell.getCx();
 //		float cy = cell.getCy();
-		
 //		Paint pt = st == E_STATUS.Black ? mPaintCellFgB : mPaintCellFgW;  
 //		canvas.drawCircle(cx, cy, w, pt);
 
-		Resources res = this.getContext().getResources();
-		Bitmap bitmap = st == E_STATUS.Black ? BitmapFactory.decodeResource(res, R.drawable.b1) : BitmapFactory.decodeResource(res, R.drawable.w1);
-		Bitmap bm = Bitmap.createScaledBitmap(bitmap, 
-													(int)cell.getWidth()-INSET*2, 
-													(int)cell.getHeight()-INSET*2, 
-													true);
-//		Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-//		RectF rect = cell.getRectF();
-//		rect.inset(3f, 3f);
-//		Paint pt = new Paint();
-//		pt.setAntiAlias(true);
-//		canvas.drawBitmap(bm, src, rect, pt);
-		canvas.drawBitmap(bm, cell.getLeft()+(float)INSET, cell.getTop()+(float)INSET, null);
+		int INSET = (int)(cell.getWidth() * CELL_SIZE_FACTOR * 0.3);
+		
+		if (st == E_STATUS.Black){
+			canvas.drawBitmap(mBitmapBlack, cell.getLeft()+(float)INSET, cell.getTop()+(float)INSET, null);
+		} else{
+			canvas.drawBitmap(mBitmapWhite, cell.getLeft()+(float)INSET, cell.getTop()+(float)INSET, null);
+		}
 	
 	}
 	

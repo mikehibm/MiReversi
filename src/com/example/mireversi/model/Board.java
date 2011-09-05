@@ -60,7 +60,7 @@ public class Board {
 		this.rect.bottom = this.rect.top + (int)(sz / Board.ROWS) * Board.ROWS;		//行数で割り切れない場合は余りを捨てる。
 		
 		float cellW = this.getCellWidth();
-		float cellH = this.getCellHeidht();
+		float cellH = this.getCellHeight();
 
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLS; j++) {
@@ -87,7 +87,7 @@ public class Board {
 		return this.rect.width() / (float)COLS;
 	}
 
-	public float getCellHeidht(){
+	public float getCellHeight(){
 		return this.rect.height() / (float)ROWS;
 	}
 	
