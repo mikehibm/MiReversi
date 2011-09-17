@@ -47,6 +47,7 @@ public class ReversiView extends View implements IPlayerCallback {
 	private int mWidth;
 	private int mHeight;
 	private static final float CELL_SIZE_FACTOR = 0.40f;
+	private static final float CELL_SIZE_FACTOR_PRG = 0.30f;
 	private boolean mPaused; 
 
 	public ReversiView(Context context) {
@@ -142,7 +143,7 @@ public class ReversiView extends View implements IPlayerCallback {
 		Resources res = this.getContext().getResources();
 		
 		//ボードの背景
-		Bitmap board = BitmapFactory.decodeResource(res, R.drawable.a6);
+		Bitmap board = BitmapFactory.decodeResource(res, R.drawable.bg2_green);
 		mBitmapBoard = Bitmap.createScaledBitmap(board, (int)mBoard.getRectF().width(), (int)mBoard.getRectF().height(), true);
 		
 		//黒のコマ
@@ -411,8 +412,8 @@ public class ReversiView extends View implements IPlayerCallback {
 			//現在思考中のセルを赤丸で表示。
 			Cell cell = p.getCurrentCell();
 			if (cell != null){
-				canvas.drawCircle(cell.getCx(), cell.getCy(),  mBoard.getCellWidth() * CELL_SIZE_FACTOR, mPaintCellCur);
-				invalidate(cell.getRect());
+				canvas.drawCircle(cell.getCx(), cell.getCy(),  mBoard.getCellWidth() * CELL_SIZE_FACTOR_PRG, mPaintCellCur);
+				invalidate(cell.getRect()); 
 			}
 		} 
 		

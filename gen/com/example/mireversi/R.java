@@ -48,9 +48,9 @@ public final class R {
         public static final int winner_translate_y=0x7f080009;
     }
     public static final class drawable {
-        public static final int a6=0x7f020000;
-        public static final int b1=0x7f020001;
-        public static final int green=0x7f020002;
+        public static final int b1=0x7f020000;
+        public static final int bg1=0x7f020001;
+        public static final int bg2_green=0x7f020002;
         public static final int icon=0x7f020003;
         public static final int w1=0x7f020004;
     }
