@@ -79,10 +79,10 @@ public class GameActivity extends Activity{
 		case R.id.mnuPref:
 			openPref();
 			break;
-		case R.id.mnuStat:
-			mReversiView.showCountsToast();
-			break;
-		case R.id.mnuInit:
+//		case R.id.mnuStat:
+//			mReversiView.showCountsToast();
+//			break;
+		case R.id.mnuInit: 
 			mReversiView.init(true);
 			break;
 		default:

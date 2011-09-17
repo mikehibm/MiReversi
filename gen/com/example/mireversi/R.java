@@ -56,10 +56,9 @@ public final class R {
     }
     public static final class id {
         public static final int frame=0x7f0b0000;
-        public static final int mnuExit=0x7f0b0006;
-        public static final int mnuInit=0x7f0b0005;
+        public static final int mnuExit=0x7f0b0005;
+        public static final int mnuInit=0x7f0b0004;
         public static final int mnuPref=0x7f0b0003;
-        public static final int mnuStat=0x7f0b0004;
         public static final int txtWinner=0x7f0b0002;
         public static final int vwBack=0x7f0b0001;
     }
