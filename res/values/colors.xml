@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="screen_bg">#AABBBB</color>    
+	<color name="screen_bg">#107010</color>    
 
-	<color name="board_bg">#00B400</color>    
+	<color name="board_bg">#00AA00</color>    
 	<color name="board_border">#282828</color>    
   
 	<color name="cell_fg_white">#FFFFFF</color>    

@@ -36,21 +36,22 @@ public final class R {
         public static final int winner_text_shadow=0x7f07000b;
     }
     public static final class dimen {
+        public static final int board_border=0x7f080003;
         public static final int font_size_name=0x7f080001;
         public static final int font_size_status=0x7f080000;
         public static final int font_size_winner=0x7f080002;
-        public static final int turn_circle_x=0x7f080005;
-        public static final int turn_circle_y=0x7f080006;
-        public static final int turn_rect_inset=0x7f080003;
-        public static final int turn_rect_round=0x7f080004;
-        public static final int turn_text_x=0x7f080007;
-        public static final int turn_text_y=0x7f080008;
-        public static final int winner_translate_y=0x7f080009;
+        public static final int turn_circle_x=0x7f080006;
+        public static final int turn_circle_y=0x7f080007;
+        public static final int turn_rect_inset=0x7f080004;
+        public static final int turn_rect_round=0x7f080005;
+        public static final int turn_text_x=0x7f080008;
+        public static final int turn_text_y=0x7f080009;
+        public static final int winner_translate_y=0x7f08000a;
     }
     public static final class drawable {
         public static final int b1=0x7f020000;
         public static final int bg1=0x7f020001;
-        public static final int bg2_green=0x7f020002;
+        public static final int bg2_green2=0x7f020002;
         public static final int icon=0x7f020003;
         public static final int w1=0x7f020004;
     }
@@ -71,24 +72,23 @@ public final class R {
     public static final class string {
         public static final int app_name=0x7f090000;
         public static final int mnu_exit=0x7f090001;
-        public static final int mnu_init=0x7f090004;
+        public static final int mnu_init=0x7f090003;
         public static final int mnu_pref=0x7f090002;
-        public static final int mnu_stat=0x7f090003;
-        public static final int pref_cat_general=0x7f090005;
-        public static final int pref_cat_player1=0x7f09000a;
-        public static final int pref_cat_player2=0x7f09000f;
-        public static final int pref_player1=0x7f09000b;
-        public static final int pref_player1_default=0x7f09000c;
-        public static final int pref_player1_name=0x7f09000d;
-        public static final int pref_player1_name_default=0x7f09000e;
-        public static final int pref_player2=0x7f090010;
-        public static final int pref_player2_default=0x7f090011;
-        public static final int pref_player2_name=0x7f090012;
-        public static final int pref_player2_name_default=0x7f090013;
-        public static final int pref_show_hints=0x7f090006;
-        public static final int pref_show_hints_default=0x7f090009;
-        public static final int pref_show_hints_off=0x7f090008;
-        public static final int pref_show_hints_on=0x7f090007;
+        public static final int pref_cat_general=0x7f090004;
+        public static final int pref_cat_player1=0x7f090009;
+        public static final int pref_cat_player2=0x7f09000e;
+        public static final int pref_player1=0x7f09000a;
+        public static final int pref_player1_default=0x7f09000b;
+        public static final int pref_player1_name=0x7f09000c;
+        public static final int pref_player1_name_default=0x7f09000d;
+        public static final int pref_player2=0x7f09000f;
+        public static final int pref_player2_default=0x7f090010;
+        public static final int pref_player2_name=0x7f090011;
+        public static final int pref_player2_name_default=0x7f090012;
+        public static final int pref_show_hints=0x7f090005;
+        public static final int pref_show_hints_default=0x7f090008;
+        public static final int pref_show_hints_off=0x7f090007;
+        public static final int pref_show_hints_on=0x7f090006;
     }
     public static final class xml {
         public static final int pref=0x7f050000;

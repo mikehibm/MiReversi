@@ -128,7 +128,7 @@ public class ReversiView extends View implements IPlayerCallback {
 		this.mHeight = getHeight();
 		mBoard.setSize(this.mWidth, this.mHeight);
 		
-		if (mBitmapBoard == null){
+		if (mBitmapBlack == null){
 			loadBitmap();
 		}
 		
@@ -139,21 +139,34 @@ public class ReversiView extends View implements IPlayerCallback {
 		float cw = mBoard.getCellWidth();
 		float ch = mBoard.getCellHeight();
 		int INSET = (int)(cw * CELL_SIZE_FACTOR * 0.3);
-
 		Resources res = this.getContext().getResources();
-		
-		//ボードの背景
-		Bitmap board = BitmapFactory.decodeResource(res, R.drawable.bg2_green);
-		mBitmapBoard = Bitmap.createScaledBitmap(board, (int)mBoard.getRectF().width(), (int)mBoard.getRectF().height(), true);
-		
-		//黒のコマ
-		Bitmap black = BitmapFactory.decodeResource(res, R.drawable.b1);
-		mBitmapBlack = Bitmap.createScaledBitmap(black, (int)cw-INSET*2, (int)ch-INSET*2, true);
 
-		//白のコマ
-		Bitmap white = BitmapFactory.decodeResource(res, R.drawable.w1);
-		mBitmapWhite = Bitmap.createScaledBitmap(white, (int)cw-INSET*2, (int)ch-INSET*2, true);
-}
+		try {
+			
+			//ボードの背景
+			Bitmap board = BitmapFactory.decodeResource(res, R.drawable.bg2_green2);
+			mBitmapBoard = Bitmap.createScaledBitmap(board, (int)mBoard.getRectF().width(), (int)mBoard.getRectF().height(), true);
+		} catch (Exception ex) {
+			Utils.d(ex.getMessage());
+		}
+
+		try {
+			//黒のコマ
+			Bitmap black = BitmapFactory.decodeResource(res, R.drawable.b1);
+			mBitmapBlack = Bitmap.createScaledBitmap(black, (int)cw-INSET*2, (int)ch-INSET*2, true);
+		} catch (Exception ex) {
+			Utils.d(ex.getMessage());
+		}
+
+		try {
+			//白のコマ
+			Bitmap white = BitmapFactory.decodeResource(res, R.drawable.w1);
+			mBitmapWhite = Bitmap.createScaledBitmap(white, (int)cw-INSET*2, (int)ch-INSET*2, true);
+		} catch (Exception ex) {
+			Utils.d(ex.getMessage());
+		}
+
+	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -278,21 +291,23 @@ public class ReversiView extends View implements IPlayerCallback {
 
 		if (mBoard.getRectF().width() <= 0f ) return;
 		
+		float bleft = mBoard.getRectF().left;
+		float btop = mBoard.getRectF().top;
 		float bw = mBoard.getRectF().width();
 		float bh = mBoard.getRectF().height();
 		float cw = mBoard.getCellWidth();
 		float ch = mBoard.getCellHeight();
 
 		//ボードの背景 
-		canvas.drawBitmap(mBitmapBoard, 0, 0, null);
+		canvas.drawBitmap(mBitmapBoard, bleft, btop, null);
 
 		//縦線
 		for (int i = 0; i < Board.COLS; i++) {
-			canvas.drawLine(cw * (i+1), 0, cw * (i+1), bh, mPaintBoardBorder);
+			canvas.drawLine(cw * (i+1) + bleft, btop, cw * (i+1) + bleft, bh + btop, mPaintBoardBorder);
 		}
 		//横線
 		for (int i = 0; i < Board.ROWS; i++) {
-			canvas.drawLine(0, ch * (i+1), bw, ch * (i+1), mPaintBoardBorder);
+			canvas.drawLine(bleft, ch * (i+1) + btop, bw + bleft, ch * (i+1) + btop, mPaintBoardBorder);
 		}
 
 		//全てのCellを描画
@@ -356,7 +371,7 @@ public class ReversiView extends View implements IPlayerCallback {
 		float turn_circle_y = res.getDimension(R.dimen.turn_circle_y); 
 		float turn_text_x = res.getDimension(R.dimen.turn_text_x); 
 		float turn_text_y = res.getDimension(R.dimen.turn_text_y); 
-		float top = mBoard.getRectF().bottom;
+		float top = mBoard.getRectF().bottom + mBoard.getRectF().top;
 		float center = mBoard.getRectF().width() / 2f;
 
 		//ボード以外の余白部分の背景
