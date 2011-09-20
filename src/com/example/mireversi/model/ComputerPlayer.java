@@ -138,19 +138,19 @@ public abstract class ComputerPlayer extends Player implements Runnable {
 		E_STATUS player_turn = board.getTurn();		
 		E_STATUS opp_turn = Cell.getOpponentStatus(player_turn);
 		
-		int cur_count = 0, opp_count = 0, blank_count = 0;
+//		int cur_count = 0, opp_count = 0, blank_count = 0;
 		
 		for (int i = 0; i< Board.ROWS; i++ ){
 			for (int j =0; j < Board.COLS; j++){
 				E_STATUS st = cells[i][j].getStatus();
 				if (st == player_turn){
-					cur_count++;
+//					cur_count++;
 					total += getWeight(cells[i][j], weight_table);
 				} else if (st == opp_turn){
-					opp_count++;
+//					opp_count++;
 					total -= getWeight(cells[i][j], weight_table);
 				} else {
-					blank_count++;
+//					blank_count++;
 				}
 			}
 		}

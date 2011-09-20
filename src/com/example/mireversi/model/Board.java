@@ -54,7 +54,6 @@ public class Board {
 	}
 
 	public void setSize(int w, int h){
-		float screenRate = (float)(w / h);
 		int sz = w < h ? w: h;						//正方形になる様に小さいほうに合わせる。
 		sz = (int)(sz * 0.980f);
 		sz =  (int)(sz / Board.COLS) * Board.COLS;		//列数で割り切れない場合は余りを捨てる。

@@ -22,18 +22,19 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
-        public static final int board_bg=0x7f070001;
-        public static final int board_border=0x7f070002;
-        public static final int cell_bg_available=0x7f070005;
-        public static final int cell_fg_black=0x7f070004;
-        public static final int cell_fg_current=0x7f070006;
-        public static final int cell_fg_white=0x7f070003;
+        public static final int board_bg=0x7f070002;
+        public static final int board_border=0x7f070003;
+        public static final int cell_bg_available=0x7f070006;
+        public static final int cell_fg_black=0x7f070005;
+        public static final int cell_fg_current=0x7f070007;
+        public static final int cell_fg_white=0x7f070004;
         public static final int screen_bg=0x7f070000;
-        public static final int text_fg=0x7f070007;
-        public static final int turn_rect=0x7f070008;
-        public static final int winner_rect=0x7f070009;
-        public static final int winner_text=0x7f07000a;
-        public static final int winner_text_shadow=0x7f07000b;
+        public static final int screen_bg2=0x7f070001;
+        public static final int text_fg=0x7f070008;
+        public static final int turn_rect=0x7f070009;
+        public static final int winner_rect=0x7f07000a;
+        public static final int winner_text=0x7f07000b;
+        public static final int winner_text_shadow=0x7f07000c;
     }
     public static final class dimen {
         public static final int board_border=0x7f080003;
