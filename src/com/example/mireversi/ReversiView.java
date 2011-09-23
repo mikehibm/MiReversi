@@ -61,7 +61,7 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 	private List<Cell> mChangedCells = null;
 	private int mTurnningProgress = 0;
 	private static final int TURNNING_FREQ = 5;    //frames to complete a turn.
-	private static final int TURNING_TIME = 500;  //msec
+	private static final int TURNING_TIME = 2000;  //msec
 	
 
 	public ReversiView(Context context) {
