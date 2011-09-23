@@ -60,7 +60,7 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 	private List<Cell> mTurnningCells = null;
 	private List<Cell> mChangedCells = null;
 	private int mTurnningProgress = 0;
-	private static final int TURNNING_FREQ = 4;    //frames to complete a turn.
+	private static final int TURNNING_FREQ = 5;    //frames to complete a turn.
 	private static final int TURNING_TIME = 500;  //msec
 	
 
@@ -371,28 +371,32 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 //		Paint pt = st == E_STATUS.Black ? mPaintCellFgB : mPaintCellFgW;  
 //		canvas.drawCircle(cx, cy, w, pt);
 
-		int INSET = (int)(cell.getWidth() * CELL_SIZE_FACTOR * 0.3);
+		final float INSET = (cell.getWidth() * CELL_SIZE_FACTOR * 0.3f);
+		float inset_w;
 		Bitmap bm;
+		
 		
 		if (mTurnningProgress > 0 && mTurnningCells != null && mTurnningCells.contains(cell)){
 			RectF dest =  new RectF(cell.getRectF());
 			Rect src = new Rect(0, 0, (int)cell.getWidth(), (int)cell.getHeight());
 			
 			if (mTurnningProgress > TURNNING_FREQ/2){
-				dest.inset( (cell.getWidth() * (TURNNING_FREQ - mTurnningProgress) / TURNNING_FREQ), 0 );
+				inset_w = (float)(cell.getWidth() * (TURNNING_FREQ - mTurnningProgress) / TURNNING_FREQ);
+				if (inset_w < 0f) inset_w = 0f;
+				dest.inset(inset_w , 0f);
 				bm = (st == E_STATUS.Black) ? mBitmapBlack : mBitmapWhite;
 			} else {
-				dest.inset( (cell.getWidth() * mTurnningProgress / TURNNING_FREQ), 0 );
+				inset_w = (float)(cell.getWidth() * mTurnningProgress / TURNNING_FREQ);
+				if (inset_w < 0f) inset_w = 0f;
+				dest.inset(inset_w, 0f);
 				bm = (st == E_STATUS.Black) ? mBitmapWhite : mBitmapBlack;
 			}
-			dest.offset((float)INSET, (float)INSET);
+			dest.offset(INSET, INSET);
 			canvas.drawBitmap(bm, src, dest, null);
 			
-//			canvas.drawText(String.format("%d", mTurnningProgress), cell.getLeft(), cell.getTop(), mPaintTextFg);
-
 		} else {
 			bm = (st == E_STATUS.Black) ? mBitmapBlack : mBitmapWhite;
-			canvas.drawBitmap(bm, cell.getLeft()+(float)INSET, cell.getTop()+(float)INSET, null);
+			canvas.drawBitmap(bm, cell.getLeft()+INSET, cell.getTop()+INSET, null);
 		}
 	
 	}
