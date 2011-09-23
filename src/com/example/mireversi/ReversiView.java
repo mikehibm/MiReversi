@@ -60,8 +60,11 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 	private List<Cell> mTurnningCells = null;
 	private List<Cell> mChangedCells = null;
 	private int mTurnningProgress = 0;
-	private static final int TURNNING_FREQ = 5;    //frames to complete a turn.
-	private static final int TURNING_TIME = 2000;  //msec
+	private static final int TURNNING_FREQ = 19;    //frames to complete a turn.
+	private static final int TURNING_TIME = 1000;  //msec
+	
+	private Bitmap[] mBitmapBtoW = new Bitmap[TURNNING_FREQ];
+	private Bitmap[] mBitmapWtoB = new Bitmap[TURNNING_FREQ];
 	
 
 	public ReversiView(Context context) {
@@ -126,7 +129,7 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 		
 		invalidate();
 		
-		Utils.d("init");
+		//Utils.d("init");
 		if (auto_start){
 			callPlayer();
 		}
@@ -157,7 +160,6 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 		Resources res = this.getContext().getResources();
 
 		try {
-			
 			//ボードの背景
 			Bitmap board = BitmapFactory.decodeResource(res, R.drawable.bg2_green2);
 			mBitmapBoard = Bitmap.createScaledBitmap(board, (int)mBoard.getRectF().width(), (int)mBoard.getRectF().height(), true);
@@ -168,19 +170,38 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 		try {
 			//黒のコマ
 			Bitmap black = BitmapFactory.decodeResource(res, R.drawable.b1);
-			mBitmapBlack = Bitmap.createScaledBitmap(black, (int)cw-INSET*2, (int)ch-INSET*2, true);
-		} catch (Exception ex) {
-			Utils.d(ex.getMessage());
-		}
+			mBitmapBlack = Bitmap.createScaledBitmap(black, (int)(cw-INSET*2), (int)(ch-INSET*2), true);
 
-		try {
 			//白のコマ
 			Bitmap white = BitmapFactory.decodeResource(res, R.drawable.w1);
-			mBitmapWhite = Bitmap.createScaledBitmap(white, (int)cw-INSET*2, (int)ch-INSET*2, true);
-		} catch (Exception ex) {
+			mBitmapWhite = Bitmap.createScaledBitmap(white, (int)cw-INSET*2, 
+					(int)ch-INSET*2, true);
+
+			//裏返すアニメーションの為のビットマップを用意しておく。
+			for (int i = 1;i <= TURNNING_FREQ; i++){
+				if (i <= TURNNING_FREQ/2){
+					mBitmapBtoW[i-1] = Bitmap.createScaledBitmap(mBitmapBlack, 
+																(int)(cw-INSET*2) * (TURNNING_FREQ - i*2) / TURNNING_FREQ, 
+																(int)(ch-INSET*2), true);
+
+					mBitmapWtoB[i-1] = Bitmap.createScaledBitmap(mBitmapWhite, 
+																(int)(cw-INSET*2) * (TURNNING_FREQ - i*2) / TURNNING_FREQ, 
+																(int)(ch-INSET*2), true);
+				} else {
+					mBitmapBtoW[i-1] = Bitmap.createScaledBitmap(mBitmapWhite, 
+																(int)(cw-INSET*2) * (i*2 - TURNNING_FREQ) / TURNNING_FREQ, 
+																(int)(ch-INSET*2), true);
+
+					mBitmapWtoB[i-1] = Bitmap.createScaledBitmap(mBitmapBlack, 
+																(int)(cw-INSET*2) * (i*2 - TURNNING_FREQ) / TURNNING_FREQ, 
+																(int)(ch-INSET*2), true);
+				}
+			}
+
+		} catch (Exception ex){
 			Utils.d(ex.getMessage());
 		}
-
+		
 	}
 
 	@Override
@@ -365,34 +386,41 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 	}
 	
 	private void drawStone(Cell cell, Canvas canvas, float cw, Cell.E_STATUS st){
-//		float w = cw * CELL_SIZE_FACTOR;
-//		float cx = cell.getCx();
-//		float cy = cell.getCy();
-//		Paint pt = st == E_STATUS.Black ? mPaintCellFgB : mPaintCellFgW;  
-//		canvas.drawCircle(cx, cy, w, pt);
-
 		final float INSET = (cell.getWidth() * CELL_SIZE_FACTOR * 0.3f);
-		float inset_w;
+//		float inset_w;
 		Bitmap bm;
 		
-		
 		if (mTurnningProgress > 0 && mTurnningCells != null && mTurnningCells.contains(cell)){
-			RectF dest =  new RectF(cell.getRectF());
-			Rect src = new Rect(0, 0, (int)cell.getWidth(), (int)cell.getHeight());
+//			RectF dest =  new RectF(cell.getRectF());
+//			Rect src = new Rect(0, 0, (int)cw, (int)cell.getHeight());
+
+//			if (mTurnningProgress > TURNNING_FREQ/2){
+//				inset_w = (float)((cw-INSET*2) * (TURNNING_FREQ - mTurnningProgress) / TURNNING_FREQ);
+//				if (inset_w < 0f) inset_w = 0f;
+//				dest.inset(inset_w , 0f);
+//				bm = (st == E_STATUS.Black) ? mBitmapBlack : mBitmapWhite;
+//			} else {
+//				inset_w = (float)((cw-INSET*2) * mTurnningProgress / TURNNING_FREQ);
+//				if (inset_w < 0f) inset_w = 0f;
+//				dest.inset(inset_w, 0f);
+//				bm = (st == E_STATUS.Black) ? mBitmapWhite : mBitmapBlack;
+//			}
+//			dest.offset(INSET, INSET);
+//			canvas.drawBitmap(bm, src, dest, null);
+
+			bm = (st == E_STATUS.Black) ? mBitmapBtoW[mTurnningProgress-1] : mBitmapWtoB[mTurnningProgress-1];
 			
-			if (mTurnningProgress > TURNNING_FREQ/2){
-				inset_w = (float)(cell.getWidth() * (TURNNING_FREQ - mTurnningProgress) / TURNNING_FREQ);
-				if (inset_w < 0f) inset_w = 0f;
-				dest.inset(inset_w , 0f);
-				bm = (st == E_STATUS.Black) ? mBitmapBlack : mBitmapWhite;
+			int offset_w;
+			if (mTurnningProgress <= TURNNING_FREQ/2){
+				offset_w = (int)(cw-INSET*2) * (mTurnningProgress*2) / TURNNING_FREQ / 2;
 			} else {
-				inset_w = (float)(cell.getWidth() * mTurnningProgress / TURNNING_FREQ);
-				if (inset_w < 0f) inset_w = 0f;
-				dest.inset(inset_w, 0f);
-				bm = (st == E_STATUS.Black) ? mBitmapWhite : mBitmapBlack;
+				offset_w = (int)(cw-INSET*2) * (TURNNING_FREQ - mTurnningProgress)*2 / TURNNING_FREQ / 2;
 			}
-			dest.offset(INSET, INSET);
-			canvas.drawBitmap(bm, src, dest, null);
+			
+			canvas.drawBitmap(bm, 
+							  cell.getLeft()+INSET + offset_w, 
+							  cell.getTop()+INSET, 
+							  null);
 			
 		} else {
 			bm = (st == E_STATUS.Black) ? mBitmapBlack : mBitmapWhite;
