@@ -117,6 +117,7 @@ public class ComputerPlayerLevel3 extends ComputerPlayer{
 		
 ////DEBUG
 //Utils.d(String.format("Chosen cell=%d: %d,%d   Eval=%d", n, chosenCell.getCol(), chosenCell.getRow(), chosenCell.getEval() ));
+		this.setCurrentCell(null);
 
 		return pos;
 	}

@@ -17,7 +17,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RadialGradient;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Paint.Style;
 import android.graphics.Shader;
@@ -60,8 +59,8 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 	private List<Cell> mTurnningCells = null;
 	private List<Cell> mChangedCells = null;
 	private int mTurnningProgress = 0;
-	private static final int TURNNING_FREQ = 19;    //frames to complete a turn.
-	private static final int TURNING_TIME = 1000;  //msec
+	private static final int TURNNING_FREQ = 15;    //frames to complete a turn.
+	private static final int TURNING_TIME = 600;  //msec
 	
 	private Bitmap[] mBitmapBtoW = new Bitmap[TURNNING_FREQ];
 	private Bitmap[] mBitmapWtoB = new Bitmap[TURNNING_FREQ];
@@ -206,7 +205,8 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (mTurnningCells != null || mTurnningProgress > 0) return true;		//裏返しの最中は何も出来ない。
+		//裏返しの最中は何も出来ない。
+		if (mTurnningCells != null || mTurnningProgress > 0) return true;		
 		
 		float x = event.getX();
 		float y = event.getY();
@@ -228,7 +228,16 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 		return true;
 	}
 
-	private void move(Point point){
+	private void move(final Point point){
+		
+		//裏返しアニメーション中の場合は終わるまで待ってから実行する。
+		if (mTurnningCells != null){
+			mHandler.postDelayed(new Runnable(){
+				@Override public void run(){ move(point); }
+			}, TURNING_TIME / 2);
+			return;
+		}
+		
 		mChangedCells = null;
 		mTurnningCells = null;
 		mTurnningProgress = 0;
@@ -259,12 +268,13 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 			}
 		}
 		
-		callPlayer();
-			
 		invalidate(currentCell.getRect());
 
 		//裏返し処理用タイマースレッドを開始
 		startTurnning();
+
+		//次のプレーヤーに順番を渡す。
+		callPlayer();
 	}
 	
 	@Override
@@ -272,17 +282,8 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 		if (pos == null) return;
 		if (pos.y < 0 || pos.x < 0) return;
 		if (mPaused) return;
-		
-		if (mTurnningCells != null || mTurnningProgress > 0){
-			mHandler.postDelayed(new Runnable(){
-				@Override
-				public void run(){
-					move(pos);
-				}
-			}, TURNING_TIME);
-		} else {
-			move(pos);
-		}
+
+		move(pos);
 	}
 	
 	@Override
@@ -303,9 +304,16 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 	}
 	
 	private void finish(){
-		mBoard.setFinished();
-//		showCountsToast();
 		
+		//裏返しアニメーション中の場合は終わるまで待ってから実行する。
+		if (mTurnningCells != null){
+			mHandler.postDelayed(new Runnable(){
+				@Override public void run(){ finish(); }
+			}, TURNING_TIME / 2);
+			return;
+		}
+		
+		mBoard.setFinished();
 		invalidate();			
 	}
 	
@@ -387,27 +395,9 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 	
 	private void drawStone(Cell cell, Canvas canvas, float cw, Cell.E_STATUS st){
 		final float INSET = (cell.getWidth() * CELL_SIZE_FACTOR * 0.3f);
-//		float inset_w;
 		Bitmap bm;
 		
-		if (mTurnningProgress > 0 && mTurnningCells != null && mTurnningCells.contains(cell)){
-//			RectF dest =  new RectF(cell.getRectF());
-//			Rect src = new Rect(0, 0, (int)cw, (int)cell.getHeight());
-
-//			if (mTurnningProgress > TURNNING_FREQ/2){
-//				inset_w = (float)((cw-INSET*2) * (TURNNING_FREQ - mTurnningProgress) / TURNNING_FREQ);
-//				if (inset_w < 0f) inset_w = 0f;
-//				dest.inset(inset_w , 0f);
-//				bm = (st == E_STATUS.Black) ? mBitmapBlack : mBitmapWhite;
-//			} else {
-//				inset_w = (float)((cw-INSET*2) * mTurnningProgress / TURNNING_FREQ);
-//				if (inset_w < 0f) inset_w = 0f;
-//				dest.inset(inset_w, 0f);
-//				bm = (st == E_STATUS.Black) ? mBitmapWhite : mBitmapBlack;
-//			}
-//			dest.offset(INSET, INSET);
-//			canvas.drawBitmap(bm, src, dest, null);
-
+		if (mTurnningProgress >0 && mTurnningCells != null && mTurnningCells.contains(cell)){
 			bm = (st == E_STATUS.Black) ? mBitmapBtoW[mTurnningProgress-1] : mBitmapWtoB[mTurnningProgress-1];
 			
 			int offset_w;
@@ -499,11 +489,7 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 		
 		//コンピュータの思考中の場合は進捗状況を表示。
 		Player p = mBoard.getCurrentPlayer();
-		if (p != null && !p.isHuman()){
-//			mPaintTextFg.setTextSize(fontSize);
-//			s = String.valueOf(mBoard.getCurrentPlayer().getProgress()) + "%"; 
-//			canvas.drawText(s, rect.left + turn_circle_x, top + turn_text_y*2.5f, mPaintTextFg);	
-
+		if (p != null && !p.isHuman() /*&& mTurnningCells == null*/){
 			//現在思考中のセルを赤丸で表示。
 			Cell cell = p.getCurrentCell();
 			if (cell != null){
@@ -572,12 +558,21 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 	private void callPlayer(){
 		if (mPaused) return;
 		
+		//裏返しアニメーション中の場合は終わるまで待ってから実行する。
+		if (mTurnningCells != null){
+			mHandler.postDelayed(new Runnable(){
+				@Override public void run(){ callPlayer(); }
+			}, TURNING_TIME / 2);
+			return;
+		}
+		
 		Player p = mBoard.getCurrentPlayer();
 		if (p != null && !p.isHuman()){
 			p.startThinking(this);
 		}
 	}
 
+	//石を裏返すアニメーションの為のスレッドを開始する
 	private void startTurnning(){
 		new Thread(this).start();
 	}
@@ -609,12 +604,7 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 		mTurnningCells = null;
 		mTurnningProgress = 0;
 
-//		try {
-//			Thread.sleep(TURNING_TIME / TURNNING_FREQ);
-//		} catch (Exception e) {
-//			Utils.d(e.getMessage());
-//		}
-
+		//アニメーション完了後の描画処理
 		mHandler.post(new Runnable(){
 			@Override
 			public void run(){
