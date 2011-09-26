@@ -398,7 +398,7 @@ public class ReversiView extends View implements IPlayerCallback, Runnable{
 		Bitmap bm;
 		
 		if (mTurnningProgress >0 && mTurnningCells != null && mTurnningCells.contains(cell)){
-			bm = (st == E_STATUS.Black) ? mBitmapBtoW[mTurnningProgress-1] : mBitmapWtoB[mTurnningProgress-1];
+			bm = (st == E_STATUS.Black) ? mBitmapWtoB[mTurnningProgress-1] : mBitmapBtoW[mTurnningProgress-1];
 			
 			int offset_w;
 			if (mTurnningProgress <= TURNNING_FREQ/2){
