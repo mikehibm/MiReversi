@@ -1,3 +1,8 @@
+/*
+* Copyright (c) 2011 Makoto Ishida
+* Please see the file MIT-LICENSE.txt for copying permission.
+*/
+
 package com.example.mireversi.model;
 
 import com.example.mireversi.model.Cell.E_STATUS;
